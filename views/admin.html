@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Yayasan Sentuhan Kasih</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-[#EAF6F6] text-slate-700 min-h-screen p-4 sm:p-8">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+    
+    <!-- HEADER -->
+    <div class="flex justify-between items-center bg-white/90 backdrop-blur-sm p-5 rounded-2xl shadow-sm border border-emerald-100/60">
+      <div class="flex items-center gap-3">
+        <!-- Logo Kasih -->
+        <img src="/logo.png" alt="Logo Yayasan" class="w-10 h-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <div>
+          <h1 class="text-xl font-bold text-[#14423C]">Dashboard Panel Admin</h1>
+          <p class="text-xs text-slate-500">Kelola Data Kandidat Yayasan Sentuhan Kasih</p>
+        </div>
+      </div>
+      <a href="/" class="text-xs bg-white text-slate-700 hover:text-teal-700 px-4 py-2.5 rounded-xl border border-slate-200 font-semibold shadow-sm hover:shadow transition-all flex items-center gap-1.5">
+        🌐 Lihat Katalog Utama
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- FORM INPUT KANDIDAT -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-teal-100/50 lg:col-span-1">
+        <h2 class="text-base font-bold text-[#14423C] mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+          <span>➕</span> Tambah Kandidat Baru
+        </h2>
+        
+        <form id="form-kandidat" onsubmit="simpanData(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="font-semibold text-slate-700">Nama Lengkap</label>
+            <input type="text" id="input-nama" required placeholder="Masukkan nama..." class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Kategori Pekerjaan</label>
+            <select id="input-kategori" class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all">
+              <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
+              <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
+              <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
+              <option value="Driver">Driver</option>
+              <option value="Tukang Kebun">Tukan Kebun</option>
+              <option value="Security">Security</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-semibold text-slate-700">Umur (Tahun)</label>
+              <input type="number" id="input-umur" placeholder="Contoh: 25" required class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700">Pengalaman (Tahun)</label>
+              <input type="number" id="input-pengalaman" placeholder="Contoh: 2" required class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Kota Asal</label>
+            <input type="text" id="input-asal" placeholder="Contoh: Lampung" required class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Keahlian Ringkas</label>
+            <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Ekspektasi Gaji (Rp)</label>
+            <input type="number" id="input-gaji" placeholder="Contoh: 2500000" required class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Status Availability</label>
+            <select id="input-status" class="w-full p-2.5 mt-1 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all">
+              <option value="READY WORK">READY WORK</option>
+              <option value="TER-SALUR">TER-SALUR</option>
+            </select>
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2 mt-2">
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">🖼️ Upload Foto Profil (Dari Galeri)</label>
+              <input type="file" id="input-foto" accept="image/*" required class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+            </div>
+
+            <div>
+              <label class="font-semibold text-slate-700 block mb-1">📄 Upload Dokumen CV (Dari Galeri/File)</label>
+              <input type="file" id="input-cv" accept="image/*" class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Tombol bergaya Oranye khas Katalog Utama -->
+          <button type="submit" id="btn-submit" class="w-full py-3 bg-[#FF7A1A] hover:bg-[#e6690d] active:scale-[0.99] text-white font-bold rounded-xl transition-all shadow-md shadow-orange-500/20 text-xs mt-3 flex items-center justify-center gap-2">
+            💾 Simpan Data & Upload File
+          </button>
+        </form>
+      </div>
+
+      <!-- TABEL DAFTAR KANDIDAT -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-teal-100/50 lg:col-span-2 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+            <h2 class="text-base font-bold text-[#14423C] flex items-center gap-2">
+              <span>📋</span> Daftar Kandidat Terdaftar
+            </h2>
+            <button onclick="loadDataAdmin()" class="text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg border border-slate-200 font-medium transition-all">
+              🔄 Refresh
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold">
+                  <th class="p-3 rounded-l-lg">ID</th>
+                  <th class="p-3">Nama</th>
+                  <th class="p-3">Kategori</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-center rounded-r-lg">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tabel-body" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="5" class="p-6 text-center text-slate-400">Memuat data kandidat...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    async function loadDataAdmin() {
+      try {
+        const res = await fetch('/api/candidates?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          renderTabel(data);
+        } else {
+          alert("Gagal memuat data dari server.");
+        }
+      } catch (err) {
+        alert("Gagal terhubung ke backend server Node.js!");
+      }
+    }
+
+    function renderTabel(data) {
+      const tbody = document.getElementById('tabel-body');
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 font-medium">Belum ada data kandidat tersimpan.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      data.forEach(item => {
+        const isReady = (item.status || '').toUpperCase().includes('READY');
+        const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
+    
+        html += `
+          <tr class="hover:bg-teal-50/30 transition-colors">
+            <td class="p-3 font-bold text-slate-700">${item.id}</td>
+            <td class="p-3 font-semibold text-slate-800">${item.nama}</td>
+            <td class="p-3 text-slate-500">${item.kategori || '-'}</td>
+            <td class="p-3">
+              <!-- Tombol Interaktif untuk Mengubah Status -->
+              <button onclick="gantiStatus('${item.id}', '${statusText}')" 
+                      title="Klik untuk mengubah status"
+                      class="px-2.5 py-1 text-[10px] font-bold rounded-md transition-all cursor-pointer flex items-center gap-1 shadow-sm active:scale-95 ${
+                        isReady 
+                          ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border border-emerald-300' 
+                          : 'bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-300'
+                      }">
+                <span>${isReady ? '🟢' : '🔴'}</span>
+                <span>${statusText}</span>
+                <span class="text-[8px] opacity-60">🔄</span>
+              </button>
+            </td>
+            <td class="p-3 text-center">
+              <button onclick="hapusKandidat('${item.id}')" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold border border-red-200 transition-colors">
+                🗑️ Hapus
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    async function simpanData(e) {
+      e.preventDefault();
+  
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerText = '⌛ Mengunggah File...';
+
+      const formData = new FormData();
+      formData.append('nama', document.getElementById('input-nama').value);
+      formData.append('kategori', document.getElementById('input-kategori').value);
+      formData.append('umur', document.getElementById('input-umur').value);
+      formData.append('asal', document.getElementById('input-asal').value);
+      formData.append('pengalaman', document.getElementById('input-pengalaman').value);
+      formData.append('keahlian', document.getElementById('input-keahlian').value);
+      formData.append('gaji', document.getElementById('input-gaji').value);
+      formData.append('status', document.getElementById('input-status').value);
+
+      const fileFoto = document.getElementById('input-foto').files[0];
+      const fileCv = document.getElementById('input-cv').files[0];
+
+      if (fileFoto) formData.append('foto', fileFoto);
+      if (fileCv) formData.append('fotoCv', fileCv);
+
+      try {
+        const res = await fetch('/api/candidates', {
+          method: 'POST',
+          body: formData // Mengirim FormData (bukan JSON string)
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          alert('✅ Data kandidat dan file berhasil diupload!');
+          document.getElementById('form-kandidat').reset();
+          loadDataAdmin();
+        } else {
+          alert('❌ Gagal: ' + (result.message || 'Terjadi kesalahan'));
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan koneksi server.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '💾 Simpan Data & Upload File';
+      }
+    }
+
+    async function hapusKandidat(id) {
+      if (!confirm(`Apakah Anda yakin ingin menghapus kandidat ID ${id}?`)) return;
+
+      try {
+        const res = await fetch(`/api/candidates/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          loadDataAdmin();
+        } else {
+          alert("Gagal menghapus data.");
+        }
+      } catch (err) {
+        alert("Error server.");
+      }
+    }
+
+    async function gantiStatus(id, statusSekarang) {
+      // Tentukan status baru (toggle antara READY WORK dan TER-SALUR)
+      const statusBaru = statusSekarang === 'READY WORK' ? 'TER-SALUR' : 'READY WORK';
+
+      if (!confirm(`Ubah status kandidat ${id} menjadi "${statusBaru}"?`)) return;
+
+      try {
+        const res = await fetch(`/api/candidates/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: statusBaru })
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          loadDataAdmin(); // Reload tabel admin secara otomatis
+        } else {
+          alert("❌ Gagal memperbarui status: " + (result.message || 'Error'));
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan koneksi server.");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDataAdmin);
+  </script>
+</body>
+</html>

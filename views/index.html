@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katalog Digital Kandidat - Yayasan Sentuhan Kasih</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body { 
+      font-family: 'Inter', sans-serif; 
+    } 
+    .bg-katalog-theme {
+      background: linear-gradient(135deg, #e8f6f6 0%, #dcf0f2 50%, #eaf8f8 100%);
+      background-attachment: fixed;
+    }
+    .bg-pattern {
+      background-image: radial-gradient(#00a896 0.6px, transparent 0.6px);
+      background-size: 20px 20px;
+      opacity: 0.12;
+    }
+  </style>
+</head>
+<body class="bg-katalog-theme text-slate-800 antialiased min-h-screen flex flex-col justify-between relative">
+
+  <!-- Pattern Overlay -->
+  <div class="absolute inset-0 bg-pattern pointer-events-none z-0"></div>
+
+  <!-- CONTAINER UTAMA -->
+  <div class="relative z-10 flex-grow flex flex-col justify-between">
+
+    <!-- HEADER -->
+    <header class="pt-6 pb-4 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="/logo.png" alt="Logo Yayasan" class="w-10 h-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <div>
+          <h2 class="text-sm font-bold text-slate-800 leading-tight">Yayasan</h2>
+          <h2 class="text-xs font-semibold text-teal-700 leading-tight">Sentuhan Kasih</h2>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <h1 class="text-2xl md:text-3xl font-extrabold text-teal-900 tracking-wide uppercase">
+          KATALOG KANDIDAT READY
+        </h1>
+        <p class="text-xs text-slate-500 mt-0.5">Penyaluran Tenaga Kerja Terpercaya & Profesional</p>
+      </div>
+
+      <div>
+        <a href="/admin" class="text-xs px-3.5 py-2 bg-white/90 hover:bg-white text-slate-700 font-medium rounded-lg border border-slate-300 transition-all shadow-sm flex items-center gap-1.5">
+          🔒 Login Admin
+        </a>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 w-full flex-grow">
+      
+      <!-- FILTER BAR -->
+      <div class="bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-teal-100 shadow-sm mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+          
+          <div>
+            <input type="text" id="filter-search" oninput="filterData()" 
+                   placeholder="Cari Nama/ID/Keahlian..." 
+                   class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
+          </div>
+
+          <div>
+            <select id="filter-kategori" onchange="filterData()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
+              <option value="Semua">Semua Kategori</option>
+              <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
+              <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
+              <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
+              <option value="Driver">Driver</option>
+              <option value="Tukang Kebun">Tukang Kebun</option>
+              <option value="Security">Security</option>
+            </select>
+          </div>
+
+          <div>
+            <select id="filter-pengalaman" onchange="filterData()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
+              <option value="Semua">Pengalaman: Semua</option>
+              <option value="kurang1">Pengalaman: &lt; 1 Tahun</option>
+              <option value="1sampai3">Pengalaman: 1 - 3 Tahun</option>
+              <option value="lebih3">Pengalaman: &gt; 3 Tahun</option>
+            </select>
+          </div>
+
+          <div>
+            <select id="filter-status" onchange="filterData()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
+              <option value="Semua">Status: Semua Status</option>
+              <option value="READY WORK">Status: Ready Work</option>
+              <option value="TER-SALUR">Status: Ter-salur</option>
+            </select>
+          </div>
+
+          <div>
+            <button onclick="filterData()" class="w-full h-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-lg transition-all shadow-sm flex items-center justify-center gap-1">
+              🔍 Cari Sekarang
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GRID KANDIDAT -->
+      <div id="katalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <p class="text-slate-400 col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">Memuat data kandidat...</p>
+      </div>
+
+    </main>
+
+    <!-- MODAL POP-UP DOKUMEN CV -->
+    <div id="cv-modal" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        
+        <!-- Header Modal -->
+        <div class="bg-teal-900 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
+          <h3 id="cv-title" class="font-bold text-sm md:text-base">Dokumen CV Kandidat</h3>
+          <button onclick="closeCv()" class="text-slate-300 hover:text-white text-2xl font-bold leading-none">&times;</button>
+        </div>
+
+        <!-- Preview CV Image -->
+        <div class="p-4 overflow-y-auto flex-grow flex justify-center items-start bg-slate-100">
+          <img id="cv-img-preview" src="" alt="Gambar CV" class="w-full max-w-xl h-auto object-contain rounded-lg border border-slate-200 shadow-sm" onerror="this.src='https://placehold.co/500x700?text=Dokumen+CV+Tidak+Tersedia'">
+        </div>
+
+        <!-- Tombol Tutup -->
+        <div class="p-4 bg-white border-t border-slate-100 flex justify-end flex-shrink-0">
+          <button onclick="closeCv()" class="px-6 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+            Tutup
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white/80 border-t border-slate-200 py-5 text-center text-xs text-slate-500 mt-8">
+      <p>© 2026 Yayasan Sentuhan Kasih. Seluruh Hak Cipta Dilindungi.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const NO_WA_1 = "6285111021218"; // Admin 1
+    const NO_WA_2 = "6281399243318"; // Admin 2
+    const STORAGE_KEY = 'yayasan_candidates';
+
+    let globalCandidates = [];
+
+    async function loadCandidates() {
+      try {
+        // Parameter ?t= Date.now() memaksa browser mengambil data terbaru
+        const res = await fetch('/api/candidates?t=' + Date.now());
+        if (res.ok) {
+          globalCandidates = await res.json();
+          filterData();
+        }
+      } catch (e) {
+      console.error("Gagal terhubung ke API Kandidat.");
+      }
+    }
+
+    function filterData() {
+      const querySearch = document.getElementById('filter-search').value.toLowerCase().trim();
+      const valKategori = document.getElementById('filter-kategori').value;
+      const valPengalaman = document.getElementById('filter-pengalaman').value;
+      const valStatus = document.getElementById('filter-status').value;
+
+      const hasilFilter = globalCandidates.filter(item => {
+        const matchSearch = !querySearch || 
+                            (item.nama && item.nama.toLowerCase().includes(querySearch)) ||
+                            (item.id && String(item.id).toLowerCase().includes(querySearch)) ||
+                            (item.keahlian && item.keahlian.toLowerCase().includes(querySearch)) ||
+                            (item.asal && item.asal.toLowerCase().includes(querySearch));
+
+        const matchKategori = (valKategori === 'Semua') || 
+                              (item.kategori && item.kategori.toLowerCase().includes(valKategori.toLowerCase()));
+        
+        const itemStatus = (item.status || '').toUpperCase();
+        let matchStatus = true;
+        if (valStatus === 'READY WORK') {
+          matchStatus = itemStatus.includes('READY');
+        } else if (valStatus === 'TER-SALUR') {
+          matchStatus = itemStatus.includes('SALUR');
+        }
+
+        let matchPengalaman = true;
+        const exp = parseInt(item.pengalaman) || 0;
+        if (valPengalaman === 'kurang1') matchPengalaman = exp < 1;
+        else if (valPengalaman === '1sampai3') matchPengalaman = exp >= 1 && exp <= 3;
+        else if (valPengalaman === 'lebih3') matchPengalaman = exp > 3;
+
+        return matchSearch && matchKategori && matchStatus && matchPengalaman;
+      });
+
+      renderGrid(hasilFilter);
+    }
+
+    function renderGrid(data) {
+      const grid = document.getElementById('katalog-grid');
+
+      if (!data || data.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 bg-white/80 rounded-xl border border-teal-100 text-slate-500">
+            <p class="text-base font-semibold">Kandidat Tidak Ditemukan</p>
+          </div>`;
+        return;
+      }
+
+      let htmlContent = '';
+
+      data.forEach(item => {
+        const textWA = encodeURIComponent(`Halo Admin Yayasan Sentuhan Kasih, saya berminat dengan kandidat:\n\nNama: ${item.nama}\nID: ${item.id}\nKategori: ${item.kategori || '-'}\n\nApakah masih tersedia?`);
+        const formattedGaji = Number(item.gaji) ? Number(item.gaji).toLocaleString('id-ID') : (item.gaji || '-');
+
+        const isReady = (item.status || '').toUpperCase().includes('READY');
+        const statusBadge = isReady 
+          ? `<span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded border border-emerald-200">READY WORK</span>`
+          : `<span class="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded border border-slate-200">TER-SALUR</span>`;
+
+        htmlContent += `
+          <div class="bg-white rounded-xl border border-teal-100/80 shadow-md p-4 flex flex-col justify-between hover:shadow-lg transition-all">
+            
+            <div>
+              <div class="flex gap-3 items-start">
+                <img src="${item.foto || 'https://placehold.co/150?text=Foto'}" 
+                     alt="${item.nama}" 
+                     class="w-24 h-28 object-cover rounded-lg bg-slate-100 border border-slate-200 flex-shrink-0"
+                     onerror="this.src='https://placehold.co/150?text=No+Image'">
+                
+                <div class="flex-grow">
+                  <span class="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-100 inline-block mb-1">
+                    ${item.kategori || 'Kandidat'}
+                  </span>
+                  <h3 class="font-bold text-slate-900 text-sm leading-snug">${item.nama}</h3>
+                  <p class="text-[11px] text-slate-400 font-medium mb-1.5">ID: #${item.id}</p>
+                  
+                  <div class="space-y-0.5 text-[11px] text-slate-700">
+                    <div>👤 <b>${item.umur || '-'}</b> Thn | 📍 <b>${item.asal || '-'}</b></div>
+                    <div>⭐ <b>${item.pengalaman || 0} Tahun</b> Pengalaman</div>
+                    <div class="line-clamp-1">🍳 ${item.keahlian || '-'}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 block leading-tight">Ekspektasi Gaji:</span>
+                  <span class="font-extrabold text-slate-900 text-sm">Rp ${formattedGaji}</span>
+                </div>
+                <div>${statusBadge}</div>
+              </div>
+            </div>
+
+            <div class="mt-3 space-y-1.5">
+              <button onclick="openCv('${item.id}')" 
+                      class="w-full py-1.5 px-2 text-[11px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-lg text-center transition-colors">
+                📄 Lihat Dokumen CV
+              </button>
+
+              <div class="grid grid-cols-2 gap-1.5">
+                <a href="https://wa.me/${NO_WA_1}?text=${textWA}" 
+                   target="_blank" 
+                   class="py-1.5 px-1 text-[10px] font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-1">
+                  💬 WA Admin 1
+                </a>
+                
+                <a href="https://wa.me/${NO_WA_2}?text=${textWA}" 
+                   target="_blank" 
+                   class="py-1.5 px-1 text-[10px] font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-1">
+                  💬 WA Admin 2
+                </a>
+              </div>
+            </div>
+
+          </div>
+        `;
+      });
+
+      grid.innerHTML = htmlContent;
+    }
+
+    function openCv(id) {
+      const item = globalCandidates.find(c => String(c.id) === String(id));
+      if (!item) return;
+
+      document.getElementById('cv-title').innerText = `Dokumen CV - ${item.nama} (${item.id})`;
+      document.getElementById('cv-img-preview').src = item.fotoCv || item.foto || 'https://placehold.co/500x700?text=CV+Tidak+Tersedia';
+      document.getElementById('cv-modal').classList.remove('hidden');
+    }
+
+    function closeCv() {
+      document.getElementById('cv-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCandidates);
+  </script>
+</body>
+</html>

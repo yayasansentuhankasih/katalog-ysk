@@ -1,0 +1,30 @@
+[
+  {
+    "id": "KND-1480",
+    "nama": "rosel",
+    "kategori": "Sopir / Driver",
+    "umur": 39,
+    "asal": "yogyakarta",
+    "keahlian": "masak",
+    "pengalaman": 8,
+    "gaji": "8000000",
+    "foto": "/uploads/foto-1784979611466-107556491.jpg",
+    "fotoCv": "/uploads/fotoCv-1784979611470-314493606.png",
+    "status": "READY WORK",
+    "createdAt": "2026-07-25T11:40:11.480Z"
+  },
+  {
+    "id": "KND-6787",
+    "nama": "taka",
+    "kategori": "Asisten Rumah Tangga (ART)",
+    "umur": 20,
+    "asal": "kopeng",
+    "keahlian": "masak",
+    "pengalaman": 6,
+    "gaji": "10000000",
+    "foto": "/uploads/foto-1784979496724-970121934.png",
+    "fotoCv": "/uploads/fotoCv-1784979496745-871306780.png",
+    "status": "READY WORK",
+    "createdAt": "2026-07-25T11:38:16.787Z"
+  }
+]

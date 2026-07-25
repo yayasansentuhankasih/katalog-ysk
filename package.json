@@ -1,0 +1,13 @@
+{
+    "name": "project yayasan sentuhan kasih",
+    "version": "1.0.0.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "5.2.1",
+        "express-session": "1.19.0",
+        "multer": "^2.2.0"
+    }
+}
