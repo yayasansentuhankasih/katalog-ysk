@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // ----------------------------------------------------
 // 1. MIDDLEWARE & SETUP AWAL
@@ -123,7 +123,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// API Tambah Kandidat Baru (Mendukung Input JSON/URL Gambar)
+// API Tambah Kandidat Baru
 app.post('/api/candidates', authAdmin, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -137,7 +137,6 @@ app.post('/api/candidates', authAdmin, upload.fields([
 
     const candidates = getCandidates();
 
-    // Simpan path gambar lokal dari folder /uploads/
     const fotoPath = `/uploads/${req.files.foto[0].filename}`;
     const fotoCvPath = (req.files.fotoCv && req.files.fotoCv[0]) 
       ? `/uploads/${req.files.fotoCv[0].filename}` 
@@ -169,19 +168,28 @@ app.post('/api/candidates', authAdmin, upload.fields([
 
 // API Ubah Status Kandidat
 app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
 
-  let candidates = getCandidates();
-  const index = candidates.findIndex(c => c.id === id);
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status baru wajib diisi!' });
+    }
 
-  if (index !== -1) {
+    const candidates = getCandidates();
+    const index = candidates.findIndex(c => c.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ success: false, message: 'Kandidat tidak ditemukan.' });
+    }
+
     candidates[index].status = status;
     saveCandidates(candidates);
-    return res.json({ success: true });
-  }
 
-  res.status(404).json({ success: false, message: 'Kandidat tidak ditemukan.' });
+    res.json({ success: true, message: 'Status kandidat berhasil diperbarui!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Gagal memperbarui status.' });
+  }
 });
 
 // API Hapus Kandidat
@@ -191,7 +199,6 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
   
   const candidate = candidates.find(c => c.id === id);
   if (candidate) {
-    // Hapus file fisik jika menggunakan file lokal upload
     if (candidate.foto && candidate.foto.startsWith('/uploads/')) {
       const p1 = path.join(__dirname, 'public', candidate.foto);
       if (fs.existsSync(p1)) fs.unlinkSync(p1);
@@ -208,41 +215,11 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
   res.json({ success: true });
 });
 
-// Endpoint untuk mengubah status kandidat
-app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    if (!status) {
-      return res.status(400).json({ success: false, message: 'Status baru wajib diisi!' });
-    }
-
-    const candidates = getCandidates();
-    const index = candidates.findIndex(c => c.id === id);
-
-    if (index === -1) {
-      return res.status(404).json({ success: false, message: 'Kandidat tidak ditemukan.' });
-    }
-
-    // Update status kandidat
-    candidates[index].status = status;
-    saveCandidates(candidates);
-
-    res.json({ success: true, message: 'Status kandidat berhasil diperbarui!' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Gagal memperbarui status.' });
-  }
-});
-
-// WAJIB UNTUK VERCEL: Export 'app'
-module.exports = app;
-
 // ----------------------------------------------------
 // 5. JALANKAN SERVER
 // ----------------------------------------------------
 app.listen(PORT, () => {
   console.log(`=================================`);
-  console.log(`Server Yayasan Aktif di: http://localhost:${PORT}`);
+  console.log(`Server Yayasan Aktif di Port: ${PORT}`);
   console.log(`=================================`);
 });
