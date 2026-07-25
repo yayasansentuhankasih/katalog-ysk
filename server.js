@@ -235,6 +235,9 @@ app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
   }
 });
 
+// WAJIB UNTUK VERCEL: Export 'app'
+module.exports = app;
+
 // ----------------------------------------------------
 // 5. JALANKAN SERVER
 // ----------------------------------------------------
