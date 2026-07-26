@@ -31,7 +31,7 @@ const authAdmin = (req, res, next) => {
   return res.status(401).json({ success: false, message: 'Akses ditolak. Silakan login terlebih dahulu.' });
 };
 
-// Matikan cache agar data kandidat baru langsung muncul di index.html
+// Matikan cache agar data kandidat baru langsung muncul
 app.use('/api/candidates', (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
@@ -39,7 +39,7 @@ app.use('/api/candidates', (req, res, next) => {
   next();
 });
 
-// Serve folder uploads agar foto bisa diakses di browser
+// Serve folder uploads
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 // ----------------------------------------------------
@@ -96,18 +96,44 @@ app.post('/api/login', (req, res) => {
   res.status(400).json({ success: false, message: 'Username atau Password Admin Salah!' });
 });
 
-// API Logout
+// API Logout Admin
 app.post('/api/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Gagal logout' });
+    }
+    res.clearCookie('connect.sid'); // Hapus cookie session
+    res.json({ success: true, message: 'Berhasil logout' });
+  });
 });
 
-// API Ambil Semua Data Kandidat
+// API Cek Status Login
+app.get('/api/check-auth', (req, res) => {
+  if (req.session && req.session.isAdmin) {
+    res.json({ isAdmin: true });
+  } else {
+    res.json({ isAdmin: false });
+  }
+});
+
+// API Ambil Semua Data Kandidat (DIFILTER BERDASARKAN STATUS ADMIN)
 app.get('/api/candidates', (req, res) => {
   const candidates = getCandidates();
-  res.json(candidates);
+  const isAdmin = req.session && req.session.isAdmin;
+
+  // Filter data noHp jika bukan admin
+  const responseData = candidates.map(item => {
+    const candidateData = { ...item };
+    if (!isAdmin) {
+      delete candidateData.noHp; // Hapus properti noHp jika BUKAN Admin
+    }
+    return candidateData;
+  });
+
+  res.json(responseData);
 });
 
+// Setup Multer untuk Upload Gambar
 const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -123,13 +149,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// API Tambah Kandidat Baru
+// API Tambah Kandidat Baru (ID OTOMATIS BERDASARKAN KATEGORI)
 app.post('/api/candidates', authAdmin, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
 ]), (req, res) => {
   try {
-    const { nama, umur, asal, keahlian, pengalaman, gaji, kategori, status } = req.body;
+    const { nama, umur, asal, keahlian, pengalaman, gaji, kategori, status, noHp, tinggi, berat } = req.body;
 
     if (!req.files || !req.files.foto) {
       return res.status(400).json({ success: false, message: 'Foto kandidat wajib diupload!' });
@@ -137,14 +163,40 @@ app.post('/api/candidates', authAdmin, upload.fields([
 
     const candidates = getCandidates();
 
+    // 📍 1. TENTUKAN KODE AWALAN (PREFIX) BERDASARKAN KATEGORI
+    let prefix = 'KND';
+    const katUpper = (kategori || '').toUpperCase();
+
+    if (katUpper.includes('ART') || katUpper.includes('ASISTEN')) {
+      prefix = 'ART';
+    } else if (katUpper.includes('BABY') || katUpper.includes('SITTER') || katUpper.includes('PENGASUH')) {
+      prefix = 'BS';
+    } else if (katUpper.includes('PERAWAT') || katUpper.includes('LANSIA') || katUpper.includes('CAREGIVER')) {
+      prefix = 'PL';
+    } else if (katUpper.includes('DRIVER')) {
+      prefix = 'DRV';
+    } else if (katUpper.includes('KEBUN')) {
+      prefix = 'TKB';
+    } else if (katUpper.includes('SECURITY')) {
+      prefix = 'SEC';
+    }
+
+    // 📍 2. HITUNG KANDIDAT YANG SUDAH ADA DENGAN PREFIX SAMA UNTUK PENOMORAN URUT
+    const countSamePrefix = candidates.filter(c => c.id && c.id.startsWith(prefix)).length;
+    const nextNumber = String(countSamePrefix + 1).padStart(2, '0'); // Contoh: 1 -> "01", 2 -> "02"
+    const generatedId = `${prefix}-${nextNumber}`;
+
     const fotoPath = `/uploads/${req.files.foto[0].filename}`;
     const fotoCvPath = (req.files.fotoCv && req.files.fotoCv[0]) 
       ? `/uploads/${req.files.fotoCv[0].filename}` 
       : fotoPath;
 
     const newCandidate = {
-      id: 'KND-' + Date.now().toString().slice(-4),
+      id: generatedId, // ID Otomatis (misal: ART-01, BS-01)
       nama,
+      noHp: noHp || '-',
+      tinggi: parseInt(tinggi) || 0,
+      berat: parseInt(berat) || 0,
       kategori: kategori || 'Umum',
       umur: parseInt(umur) || 0,
       asal: asal || '-',
@@ -160,7 +212,7 @@ app.post('/api/candidates', authAdmin, upload.fields([
     candidates.unshift(newCandidate);
     saveCandidates(candidates);
 
-    res.json({ success: true, message: 'Kandidat berhasil ditambahkan!' });
+    res.json({ success: true, message: 'Kandidat berhasil ditambahkan!', candidate: newCandidate });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Gagal menyimpan data kandidat.' });
   }
