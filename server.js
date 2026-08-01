@@ -7,6 +7,22 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// ====================================================
+// 📌 SETUP LOKASI RAILWAY VOLUME / FOLDER DATA & UPLOADS
+// ====================================================
+// Di Railway akan otomatis menggunakan Volume: /app/data
+// Di Laptop Lokal akan tetap menggunakan folder project lokal
+const BASE_DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || 
+  (process.env.NODE_ENV === 'production' ? '/app/data' : path.join(__dirname, 'data'));
+
+const DATA_DIR = BASE_DATA_DIR;
+const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
+const UPLOAD_DIR = path.join(BASE_DATA_DIR, 'uploads');
+
+// Pastikan folder Volume & Uploads langsung dibuat jika belum ada
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
 // ----------------------------------------------------
 // 1. MIDDLEWARE & SETUP AWAL
 // ----------------------------------------------------
@@ -39,15 +55,12 @@ app.use('/api/candidates', (req, res, next) => {
   next();
 });
 
-// Serve folder uploads
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// 📌 Sajikan folder uploads dari Volume Railway agar foto bisa diakses publik oleh browser
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 // ----------------------------------------------------
 // 2. HELPER BACA & SIMPAN DATA JSON
 // ----------------------------------------------------
-const DATA_DIR = path.join(__dirname, 'data');
-const DATA_FILE = path.join(__dirname, 'data', 'candidates.json');
-
 const getCandidates = () => {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]', 'utf-8');
@@ -133,12 +146,7 @@ app.get('/api/candidates', (req, res) => {
   res.json(responseData);
 });
 
-// Setup Multer untuk Upload Gambar
-const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
+// 📌 Setup Multer Menyimpan Foto Langsung ke Folder Volume
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -183,7 +191,7 @@ app.post('/api/candidates', authAdmin, upload.fields([
 
     // 📍 2. HITUNG KANDIDAT YANG SUDAH ADA DENGAN PREFIX SAMA UNTUK PENOMORAN URUT
     const countSamePrefix = candidates.filter(c => c.id && c.id.startsWith(prefix)).length;
-    const nextNumber = String(countSamePrefix + 1).padStart(2, '0'); // Contoh: 1 -> "01", 2 -> "02"
+    const nextNumber = String(countSamePrefix + 1).padStart(2, '0');
     const generatedId = `${prefix}-${nextNumber}`;
 
     const fotoPath = `/uploads/${req.files.foto[0].filename}`;
@@ -192,7 +200,7 @@ app.post('/api/candidates', authAdmin, upload.fields([
       : fotoPath;
 
     const newCandidate = {
-      id: generatedId, // ID Otomatis (misal: ART-01, BS-01)
+      id: generatedId,
       nama,
       noHp: noHp || '-',
       tinggi: parseInt(tinggi) || 0,
@@ -244,7 +252,7 @@ app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
   }
 });
 
-// API Hapus Kandidat
+// 📌 API Hapus Kandidat (Menghapus file foto dari dalam Volume)
 app.delete('/api/candidates/:id', authAdmin, (req, res) => {
   const { id } = req.params;
   let candidates = getCandidates();
@@ -252,11 +260,13 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
   const candidate = candidates.find(c => c.id === id);
   if (candidate) {
     if (candidate.foto && candidate.foto.startsWith('/uploads/')) {
-      const p1 = path.join(__dirname, 'public', candidate.foto);
+      const filename = candidate.foto.replace('/uploads/', '');
+      const p1 = path.join(UPLOAD_DIR, filename);
       if (fs.existsSync(p1)) fs.unlinkSync(p1);
     }
     if (candidate.fotoCv && candidate.fotoCv.startsWith('/uploads/') && candidate.fotoCv !== candidate.foto) {
-      const p2 = path.join(__dirname, 'public', candidate.fotoCv);
+      const filenameCv = candidate.fotoCv.replace('/uploads/', '');
+      const p2 = path.join(UPLOAD_DIR, filenameCv);
       if (fs.existsSync(p2)) fs.unlinkSync(p2);
     }
   }
@@ -273,5 +283,6 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
 app.listen(PORT, () => {
   console.log(`=================================`);
   console.log(`Server Yayasan Aktif di Port: ${PORT}`);
+  console.log(`Penyimpanan Data di: ${BASE_DATA_DIR}`);
   console.log(`=================================`);
 });
