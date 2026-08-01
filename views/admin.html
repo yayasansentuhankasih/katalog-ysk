@@ -70,16 +70,41 @@
               <input type="text" id="input-nama" required placeholder="Masukkan nama lengkap..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
+            <!-- CHECKBOX KATEGORI GANDA -->
             <div>
-              <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan</label>
-              <select id="input-kategori" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all text-slate-800">
-                <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
-                <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
-                <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
-                <option value="Driver">Driver</option>
-                <option value="Tukang Kebun">Tukang Kebun</option>
-                <option value="Security">Security</option>
-              </select>
+              <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan (Pilih 1 atau Lebih)</label>
+              <div class="space-y-1.5 p-3 bg-slate-50 rounded-xl border border-slate-200" id="container-kategori-add">
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Asisten Rumah Tangga (ART)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Baby Sitter / Pengasuh</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Perawat Lansia / Caregiver</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Driver" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Driver</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Tukang Kebun</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                  <input type="checkbox" name="input-kategori-opt" value="Security" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
+                  <span>Security</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- CONTAINER INPUT GAJI DINAMIS -->
+            <div id="container-gaji-add" class="space-y-2">
+              <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
+              <p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>
             </div>
 
             <div>
@@ -117,11 +142,6 @@
             <div>
               <label class="font-bold text-slate-700 block mb-1">Keahlian Ringkas</label>
               <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-            </div>
-
-            <div>
-              <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
-              <input type="number" id="input-gaji" placeholder="Contoh: 2500000" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
             <div>
@@ -169,7 +189,7 @@
                 <tr class="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider">
                   <th class="p-3.5">ID</th>
                   <th class="p-3.5">Nama</th>
-                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Kategori & Gaji</th>
                   <th class="p-3.5">No. HP</th>
                   <th class="p-3.5">Status</th>
                   <th class="p-3.5 text-center">Aksi</th>
@@ -210,25 +230,48 @@
           <input type="text" id="edit-nama" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan</label>
-            <select id="edit-kategori" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
-              <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
-              <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
-              <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
-              <option value="Driver">Driver</option>
-              <option value="Tukang Kebun">Tukang Kebun</option>
-              <option value="Security">Security</option>
-            </select>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
+          <select id="edit-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
+            <option value="READY WORK">READY WORK</option>
+            <option value="TER-SALUR">TER-SALUR</option>
+          </select>
+        </div>
+
+        <!-- EDIT CHECKBOX KATEGORI -->
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan (Pilih 1 atau Lebih)</label>
+          <div class="space-y-1.5 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Asisten Rumah Tangga (ART)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Baby Sitter / Pengasuh</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Perawat Lansia / Caregiver</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Driver" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Driver</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Tukang Kebun</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Security" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+              <span>Security</span>
+            </label>
           </div>
-          <div>
-            <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
-            <select id="edit-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
-              <option value="READY WORK">READY WORK</option>
-              <option value="TER-SALUR">TER-SALUR</option>
-            </select>
-          </div>
+        </div>
+
+        <!-- CONTAINER EDIT GAJI DINAMIS -->
+        <div id="container-gaji-edit" class="space-y-2">
+          <!-- Diisi via JavaScript -->
         </div>
 
         <div>
@@ -258,15 +301,9 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
-            <input type="text" id="edit-asal" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
-          </div>
-          <div>
-            <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
-            <input type="number" id="edit-gaji" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
-          </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
+          <input type="text" id="edit-asal" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
         </div>
 
         <div>
@@ -298,6 +335,57 @@
   <script>
     let globalCandidatesData = [];
 
+    // Helper render input gaji dinamis Form Tambah
+    function renderDynamicGajiAdd() {
+      const container = document.getElementById('container-gaji-add');
+      const selected = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
+      
+      if (selected.length === 0) {
+        container.innerHTML = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label><p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>`;
+        return;
+      }
+
+      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji Per Kategori (Rp)</label>`;
+      selected.forEach(kat => {
+        html += `
+          <div class="mb-2">
+            <span class="text-[11px] font-semibold text-teal-800">${kat}:</span>
+            <input type="number" required placeholder="Contoh: 2500000" data-kategori="${kat}" class="input-gaji-item-add w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-teal-500 text-slate-800">
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    // Helper render input gaji dinamis Form Edit
+    function renderDynamicGajiEdit(existingGajiObj = {}) {
+      const container = document.getElementById('container-gaji-edit');
+      const selected = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
+      
+      if (selected.length === 0) {
+        container.innerHTML = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label><p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>`;
+        return;
+      }
+
+      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji Per Kategori (Rp)</label>`;
+      selected.forEach(kat => {
+        let val = '';
+        if (existingGajiObj && typeof existingGajiObj === 'object') {
+          val = existingGajiObj[kat] || '';
+        } else if (typeof existingGajiObj === 'number' || typeof existingGajiObj === 'string') {
+          val = existingGajiObj;
+        }
+
+        html += `
+          <div class="mb-2">
+            <span class="text-[11px] font-semibold text-teal-800">${kat}:</span>
+            <input type="number" required value="${val}" placeholder="Contoh: 2500000" data-kategori="${kat}" class="input-gaji-item-edit w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-teal-500 text-slate-800">
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
     async function loadDataAdmin() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());
@@ -324,12 +412,30 @@
       data.forEach(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
         const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
+
+        // Format Tampilan Kategori & Gaji
+        let kategoriText = '-';
+        if (Array.isArray(item.kategori)) {
+          kategoriText = item.kategori.join(', ');
+        } else if (item.kategori) {
+          kategoriText = item.kategori;
+        }
+
+        let gajiText = '-';
+        if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
+          gajiText = Object.entries(item.gaji).map(([k, v]) => `<div class="text-[11px]"><b>${k}:</b> Rp ${Number(v).toLocaleString('id-ID')}</div>`).join('');
+        } else if (item.gaji) {
+          gajiText = `Rp ${Number(item.gaji).toLocaleString('id-ID')}`;
+        }
         
         html += `
           <tr class="hover:bg-teal-50/40 transition-colors">
             <td class="p-3.5 font-bold text-slate-700">#${item.id}</td>
             <td class="p-3.5 font-bold text-slate-900">${item.nama}</td>
-            <td class="p-3.5 text-slate-600 font-medium">${item.kategori || '-'}</td>
+            <td class="p-3.5 text-slate-600 font-medium">
+              <div class="font-bold text-teal-900">${kategoriText}</div>
+              <div class="mt-0.5 text-slate-500">${gajiText}</div>
+            </td>
             <td class="p-3.5 font-bold text-teal-800">📱 ${item.noHp || '-'}</td>
             <td class="p-3.5">
               <button onclick="gantiStatus('${item.id}', '${statusText}')" 
@@ -366,7 +472,6 @@
       document.getElementById('edit-id').value = item.id;
       document.getElementById('edit-id-display').innerText = item.id;
       document.getElementById('edit-nama').value = item.nama || '';
-      document.getElementById('edit-kategori').value = item.kategori || 'Asisten Rumah Tangga (ART)';
       document.getElementById('edit-status').value = item.status || 'READY WORK';
       document.getElementById('edit-nohp').value = item.noHp || '';
       document.getElementById('edit-umur').value = item.umur || '';
@@ -374,10 +479,17 @@
       document.getElementById('edit-tinggi').value = item.tinggi || '';
       document.getElementById('edit-berat').value = item.berat || '';
       document.getElementById('edit-asal').value = item.asal || '';
-      document.getElementById('edit-gaji').value = item.gaji || '';
       document.getElementById('edit-keahlian').value = item.keahlian || '';
       document.getElementById('edit-foto').value = '';
       document.getElementById('edit-cv').value = '';
+
+      // Centang checkbox kategori sesuai data kandidat
+      const targetKategori = Array.isArray(item.kategori) ? item.kategori : [item.kategori];
+      document.querySelectorAll('input[name="edit-kategori-opt"]').forEach(cb => {
+        cb.checked = targetKategori.includes(cb.value);
+      });
+
+      renderDynamicGajiEdit(item.gaji);
 
       document.getElementById('modal-edit').classList.remove('hidden');
     }
@@ -390,13 +502,27 @@
       e.preventDefault();
       const id = document.getElementById('edit-id').value;
       const btn = document.getElementById('btn-submit-edit');
+
+      // Ambil kategori yang dipilih
+      const selectedKategori = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
+      if (selectedKategori.length === 0) {
+        return alert('Pilih minimal 1 kategori pekerjaan!');
+      }
+
+      // Ambil Gaji per Kategori
+      const gajiObj = {};
+      document.querySelectorAll('.input-gaji-item-edit').forEach(input => {
+        const kat = input.getAttribute('data-kategori');
+        gajiObj[kat] = parseInt(input.value) || 0;
+      });
       
       btn.disabled = true;
       btn.innerText = '⌛ Menyimpan...';
 
       const formData = new FormData();
       formData.append('nama', document.getElementById('edit-nama').value);
-      formData.append('kategori', document.getElementById('edit-kategori').value);
+      formData.append('kategori', JSON.stringify(selectedKategori));
+      formData.append('gaji', JSON.stringify(gajiObj));
       formData.append('status', document.getElementById('edit-status').value);
       formData.append('noHp', document.getElementById('edit-nohp').value);
       formData.append('umur', document.getElementById('edit-umur').value);
@@ -404,7 +530,6 @@
       formData.append('tinggi', document.getElementById('edit-tinggi').value);
       formData.append('berat', document.getElementById('edit-berat').value);
       formData.append('asal', document.getElementById('edit-asal').value);
-      formData.append('gaji', document.getElementById('edit-gaji').value);
       formData.append('keahlian', document.getElementById('edit-keahlian').value);
 
       const fileFoto = document.getElementById('edit-foto').files[0];
@@ -439,18 +564,29 @@
     async function simpanData(e) {
       e.preventDefault();
       
+      const selectedKategori = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
+      if (selectedKategori.length === 0) {
+        return alert('Pilih minimal 1 kategori pekerjaan!');
+      }
+
+      const gajiObj = {};
+      document.querySelectorAll('.input-gaji-item-add').forEach(input => {
+        const kat = input.getAttribute('data-kategori');
+        gajiObj[kat] = parseInt(input.value) || 0;
+      });
+
       const btn = document.getElementById('btn-submit');
       btn.disabled = true;
       btn.innerText = '⌛ Mengunggah File...';
 
       const formData = new FormData();
       formData.append('nama', document.getElementById('input-nama').value);
-      formData.append('kategori', document.getElementById('input-kategori').value);
+      formData.append('kategori', JSON.stringify(selectedKategori));
+      formData.append('gaji', JSON.stringify(gajiObj));
       formData.append('umur', document.getElementById('input-umur').value);
       formData.append('asal', document.getElementById('input-asal').value);
       formData.append('pengalaman', document.getElementById('input-pengalaman').value);
       formData.append('keahlian', document.getElementById('input-keahlian').value);
-      formData.append('gaji', document.getElementById('input-gaji').value);
       formData.append('status', document.getElementById('input-status').value);
       formData.append('noHp', document.getElementById('input-nohp').value);
       formData.append('tinggi', document.getElementById('input-tinggi').value);
@@ -473,6 +609,7 @@
         if (res.ok && result.success) {
           alert('✅ Data kandidat dan file berhasil diupload!');
           document.getElementById('form-kandidat').reset();
+          renderDynamicGajiAdd();
           loadDataAdmin();
         } else {
           alert('❌ Gagal: ' + (result.message || 'Terjadi kesalahan'));
