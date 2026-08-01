@@ -7,22 +7,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ------------------- DIREKTORI & INITIALIZATION -------------------
-// Folder uploads berada di dalam folder public
 const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
-// Buat folder public/uploads jika belum ada
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
-// Buat folder data jika belum ada
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// Buat file candidates.json jika belum ada
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
 }
@@ -30,7 +26,6 @@ if (!fs.existsSync(DATA_FILE)) {
 // ------------------- DUMMY SESSION SYSTEM -------------------
 let isSessionAdminLoggedIn = false; 
 
-// Middleware Cek Auth Admin
 const authAdminMiddleware = (req, res, next) => {
   if (isSessionAdminLoggedIn) {
     return next();
@@ -51,8 +46,6 @@ const upload = multer({ storage });
 // ------------------- MIDDLEWARE EXPRESS -------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serving Static Files dari folder public (otomatis mencakup /uploads, /logo.png, dll)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ------------------- HELPER DATA JSON -------------------
@@ -69,16 +62,49 @@ function saveCandidates(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
+// ------------------- HELPER GENERATE ID SESUAI OPASI FRONTEND -------------------
+function generateCategoryId(kategori, candidates) {
+  let prefix = 'KAND';
+  const katLower = (kategori || '').toLowerCase();
+
+  if (katLower.includes('art') || katLower.includes('rumah tangga')) {
+    prefix = 'ART';
+  } else if (katLower.includes('baby') || katLower.includes('pengasuh')) {
+    prefix = 'BS';
+  } else if (katLower.includes('lansia') || katLower.includes('caregiver')) {
+    prefix = 'PL';
+  } else if (katLower.includes('driver')) {
+    prefix = 'DR';
+  } else if (katLower.includes('kebun')) {
+    prefix = 'TK';
+  } else if (katLower.includes('security')) {
+    prefix = 'SC';
+  } else if (kategori) {
+    prefix = kategori.split(' ').map(w => w[0]).join('').toUpperCase();
+  }
+
+  // Cari angka tertinggi dari ID yang memiliki prefix yang sama
+  const existingNumbers = candidates
+    .filter(c => c.id && c.id.toString().startsWith(prefix + '-'))
+    .map(c => {
+      const parts = c.id.toString().split('-');
+      return parseInt(parts[1], 10) || 0;
+    });
+
+  const maxNum = existingNumbers.length > 0 ? Math.max(...existingNumbers) : 0;
+  const nextNum = (maxNum + 1).toString().padStart(2, '0');
+
+  return `${prefix}-${nextNum}`;
+}
+
 // =================================================================
 // 🌐 1. ROUTING HALAMAN WEB
 // =================================================================
 
-// Route Utama -> index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// Route Admin -> login.html / admin.html
 app.get('/admin', (req, res) => {
   if (isSessionAdminLoggedIn) {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
@@ -102,7 +128,7 @@ app.get('/dashboard', authAdminMiddleware, (req, res) => {
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  if (username === 'sentuhan kasih' && password === 'yayasan1996') {
+  if (username === 'admin' && password === 'admin123') {
     isSessionAdminLoggedIn = true;
     return res.json({ success: true, message: 'Login berhasil!' });
   }
@@ -128,6 +154,7 @@ app.get('/api/candidates', (req, res) => {
   res.json(candidates);
 });
 
+// POST: Tambah Kandidat Baru (ID Terikat Kode Kategori)
 app.post('/api/candidates', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -136,7 +163,8 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
     const { nama, umur, asal, keahlian, pengalaman, gaji, kategori, status, noHp, tinggi, berat } = req.body;
     const candidates = getCandidates();
 
-    const newId = (candidates.length > 0 ? Math.max(...candidates.map(c => parseInt(c.id) || 0)) + 1 : 1).toString();
+    // Generate ID sesuai pilihan dropdown kategori
+    const newId = generateCategoryId(kategori || 'Asisten Rumah Tangga (ART)', candidates);
 
     let fotoPath = '';
     let fotoCvPath = '';
@@ -178,6 +206,7 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
   }
 });
 
+// PUT: Edit Data Kandidat Lengkap
 app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -238,6 +267,7 @@ app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
   }
 });
 
+// PATCH: Toggle / Edit Status Cepat
 app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
@@ -259,6 +289,7 @@ app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
   }
 });
 
+// DELETE: Hapus Data Kandidat
 app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
@@ -288,9 +319,7 @@ app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
 // ------------------- RUN SERVER -------------------
 app.listen(PORT, () => {
   console.log(`==================================================`);
-  console.log(`🚀 Server Berjalan!`);
-  console.log(`📍 Directori Upload : ${UPLOAD_DIR}`);
-  console.log(`📍 File JSON Data   : ${DATA_FILE}`);
-  console.log(`📍 URL Katalog Utama: http://localhost:${PORT}/`);
+  console.log(`🚀 Server Berjalan di Port ${PORT}!`);
+  console.log(`📍 Prefix ID: ART, BS, PL, DR, TK, SC`);
   console.log(`==================================================`);
 });
