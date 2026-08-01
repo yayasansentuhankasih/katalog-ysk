@@ -123,6 +123,22 @@
 
   </div>
 
+  <!-- 📌 MODAL VIEW CV -->
+  <div id="modal-cv" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-5 max-h-[90vh] flex flex-col border border-teal-100">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
+        <h3 class="text-sm font-extrabold text-teal-950">📄 Dokumen CV Kandidat (<span id="modal-cv-nama"></span>)</h3>
+        <button onclick="tutupModalCv()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
+      </div>
+      <div class="flex-grow overflow-y-auto flex items-center justify-center bg-slate-50 rounded-xl p-2 border border-slate-200">
+        <img id="modal-cv-img" src="" alt="Dokumen CV" class="max-w-full max-h-[70vh] object-contain rounded-lg">
+      </div>
+      <div class="pt-3 border-t border-slate-100 mt-3 flex justify-end">
+        <button onclick="tutupModalCv()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
     let allCandidates = [];
@@ -246,6 +262,8 @@
             </div>`;
         }
 
+        const cvUrl = item.fotoCv || item.foto || '';
+
         return `
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col justify-between hover:shadow-md transition-all">
             <div>
@@ -264,9 +282,10 @@
                 ${categoriesHtml}
               </div>
 
-              <div class="space-y-1 text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <div class="space-y-1 text-xs text-slate-600 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                 <p><b>Umur:</b> ${item.umur || '-'} Tahun</p>
                 <p><b>Pengalaman:</b> ${item.pengalaman || '-'} Tahun</p>
+                <p><b>TB / BB:</b> ${item.tinggi || '-'} cm / ${item.berat || '-'} kg</p>
                 <p><b>Asal:</b> ${item.asal || '-'}</p>
                 <p><b>Keahlian:</b> ${item.keahlian || '-'}</p>
               </div>
@@ -276,12 +295,30 @@
               </div>
             </div>
 
-            <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}?text=Halo%20Yayasan%20Sentuhan%20Kasih,%20saya%20tertarik%20dengan%20kandidat%20${item.nama}%20(ID:%20${item.id})" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-              💬 Hubungi via WhatsApp
-            </a>
+            <div class="space-y-2">
+              ${cvUrl ? `
+                <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  📄 Lihat Dokumen CV
+                </button>
+              ` : ''}
+
+              <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}?text=Halo%20Yayasan%20Sentuhan%20Kasih,%20saya%20tertarik%20dengan%20kandidat%20${item.nama}%20(ID:%20${item.id})" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                💬 Hubungi via WhatsApp
+              </a>
+            </div>
           </div>
         `;
       }).join('');
+    }
+
+    function bukaModalCv(nama, url) {
+      document.getElementById('modal-cv-nama').innerText = nama;
+      document.getElementById('modal-cv-img').src = url;
+      document.getElementById('modal-cv').classList.remove('hidden');
+    }
+
+    function tutupModalCv() {
+      document.getElementById('modal-cv').classList.add('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
