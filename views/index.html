@@ -141,7 +141,7 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // 📌 ATUR NOMOR HP ADMIN YAYASAN DI SINI (Ganti dengan nomor WhatsApp Admin Anda)
+    // 📌 NOMOR HP ADMIN YAYASAN (Ganti sesuai nomor WhatsApp Admin Anda)
     const NO_HP_ADMIN = "081234567890"; 
 
     let allCandidates = [];
@@ -200,7 +200,6 @@
       const pengalaman = document.getElementById('filter-pengalaman').value;
 
       const filtered = allCandidates.filter(item => {
-        // Multi-kategori match
         let matchesKategori = false;
         if (kategori === 'Semua') {
           matchesKategori = true;
@@ -210,14 +209,12 @@
           matchesKategori = item.kategori === kategori;
         }
 
-        // Pengalaman match
         const exp = parseInt(item.pengalaman) || 0;
         let matchesPengalaman = true;
         if (pengalaman === 'kurang1') matchesPengalaman = exp < 1;
         else if (pengalaman === '1sampai3') matchesPengalaman = exp >= 1 && exp <= 3;
         else if (pengalaman === 'lebih3') matchesPengalaman = exp > 3;
 
-        // Search text match
         const textSearch = `${item.nama} ${item.id} ${item.keahlian} ${item.asal}`.toLowerCase();
         const matchesSearch = textSearch.includes(search);
 
@@ -268,9 +265,11 @@
         }
 
         const cvUrl = item.fotoCv || item.foto || '';
+        const rawKandidatHp = (item.noHp || '').replace(/[^0-9]/g, '');
 
-        // Pesan otomatis untuk Admin
-        const waMessage = encodeURIComponent(`Halo Admin Yayasan Sentuhan Kasih, saya tertarik untuk menyalurkan kandidat:\n\n*Nama:* ${item.nama}\n*ID Kandidat:* #${item.id}\n\nMohon informasi lebih lanjut.`);
+        // Pesan otomatis
+        const waMessageAdmin = encodeURIComponent(`Halo Admin Yayasan, saya tertarik dengan kandidat:\n\n*Nama:* ${item.nama}\n*ID:* #${item.id}`);
+        const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih...`);
 
         return `
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col justify-between hover:shadow-md transition-all">
@@ -296,6 +295,18 @@
                 <p><b>TB / BB:</b> ${item.tinggi || '-'} cm / ${item.berat || '-'} kg</p>
                 <p><b>Asal:</b> ${item.asal || '-'}</p>
                 <p><b>Keahlian:</b> ${item.keahlian || '-'}</p>
+                
+                <!-- 📌 NOMOR HP KANDIDAT -->
+                ${isAdminLoggedIn ? `
+                  <p class="text-teal-800 font-bold bg-teal-100/70 p-1.5 rounded-lg mt-2 flex items-center justify-between">
+                    <span>📱 No HP:</span>
+                    <a href="https://wa.me/${rawKandidatHp}" target="_blank" class="underline hover:text-teal-950">${item.noHp || '-'}</a>
+                  </p>
+                ` : `
+                  <p class="text-slate-400 italic text-[11px] mt-1">
+                    📱 No HP: <i>(Login Admin untuk melihat)</i>
+                  </p>
+                `}
               </div>
 
               <div class="border-t border-slate-100 pt-2 space-y-1 mb-4">
@@ -310,10 +321,16 @@
                 </button>
               ` : ''}
 
-              <!-- Tombol WhatsApp Mengarah ke Admin Yayasan -->
-              <a href="https://wa.me/${formattedAdminHp}?text=${waMessage}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                💬 Hubungi Admin via WhatsApp
-              </a>
+              <!-- 📌 TOMBOL WHATSAPP SINGLE -->
+              ${isAdminLoggedIn && rawKandidatHp ? `
+                <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                  💬 Chat Kandidat via WhatsApp
+                </a>
+              ` : `
+                <a href="https://wa.me/${formattedAdminHp}?text=${waMessageAdmin}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                  💬 Hubungi Admin via WhatsApp
+                </a>
+              `}
             </div>
           </div>
         `;
@@ -330,8 +347,8 @@
       document.getElementById('modal-cv').classList.add('hidden');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      checkAuthStatus();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await checkAuthStatus();
       fetchCandidates();
     });
   </script>
