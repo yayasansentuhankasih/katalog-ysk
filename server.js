@@ -102,7 +102,7 @@ app.get('/dashboard', authAdminMiddleware, (req, res) => {
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  if (username === 'admin' && password === 'admin123') {
+  if (username === 'sentuhan kasih' && password === 'yayasan1996') {
     isSessionAdminLoggedIn = true;
     return res.json({ success: true, message: 'Login berhasil!' });
   }
