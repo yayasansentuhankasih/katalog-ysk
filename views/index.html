@@ -147,6 +147,16 @@
     let allCandidates = [];
     let isAdminLoggedIn = false;
 
+    // 📌 FUNGSI KEAMANAN FORMAT NOMOR WHATSAPP (Ubah 08xx -> 628xx)
+    function formatWaNumber(phone) {
+      if (!phone) return '';
+      let cleaned = phone.replace(/[^0-9]/g, ''); // Hapus karakter non-angka
+      if (cleaned.startsWith('0')) {
+        cleaned = '62' + cleaned.slice(1); // Ubah 0812... jadi 62812...
+      }
+      return cleaned;
+    }
+
     async function checkAuthStatus() {
       try {
         const res = await fetch('/api/check-auth');
@@ -234,7 +244,7 @@
         return;
       }
 
-      const formattedAdminHp = NO_HP_ADMIN.replace(/[^0-9]/g, '');
+      const formattedAdminHp = formatWaNumber(NO_HP_ADMIN);
 
       container.innerHTML = candidates.map(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
@@ -265,7 +275,7 @@
         }
 
         const cvUrl = item.fotoCv || item.foto || '';
-        const rawKandidatHp = (item.noHp || '').replace(/[^0-9]/g, '');
+        const rawKandidatHp = formatWaNumber(item.noHp || '');
 
         // Pesan otomatis
         const waMessageAdmin = encodeURIComponent(`Halo Admin Yayasan, saya tertarik dengan kandidat:\n\n*Nama:* ${item.nama}\n*ID:* #${item.id}`);
