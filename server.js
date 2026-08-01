@@ -62,10 +62,23 @@ function saveCandidates(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// ------------------- HELPER GENERATE ID SESUAI OPASI FRONTEND -------------------
-function generateCategoryId(kategori, candidates) {
+// ------------------- HELPER GENERATE ID PER KATEGORI -------------------
+function generateCategoryId(kategoriInput, candidates) {
+  let mainKategori = '';
+
+  if (Array.isArray(kategoriInput)) {
+    mainKategori = kategoriInput[0] || '';
+  } else if (typeof kategoriInput === 'string') {
+    try {
+      const parsed = JSON.parse(kategoriInput);
+      mainKategori = Array.isArray(parsed) ? (parsed[0] || '') : kategoriInput;
+    } catch(e) {
+      mainKategori = kategoriInput;
+    }
+  }
+
   let prefix = 'KAND';
-  const katLower = (kategori || '').toLowerCase();
+  const katLower = mainKategori.toLowerCase();
 
   if (katLower.includes('art') || katLower.includes('rumah tangga')) {
     prefix = 'ART';
@@ -79,11 +92,10 @@ function generateCategoryId(kategori, candidates) {
     prefix = 'TK';
   } else if (katLower.includes('security')) {
     prefix = 'SC';
-  } else if (kategori) {
-    prefix = kategori.split(' ').map(w => w[0]).join('').toUpperCase();
+  } else if (mainKategori) {
+    prefix = mainKategori.split(' ').map(w => w[0]).join('').toUpperCase();
   }
 
-  // Cari angka tertinggi dari ID yang memiliki prefix yang sama
   const existingNumbers = candidates
     .filter(c => c.id && c.id.toString().startsWith(prefix + '-'))
     .map(c => {
@@ -95,6 +107,47 @@ function generateCategoryId(kategori, candidates) {
   const nextNum = (maxNum + 1).toString().padStart(2, '0');
 
   return `${prefix}-${nextNum}`;
+}
+
+// ------------------- HELPER PARSE MULTI KATEGORI & GAJI -------------------
+function parseKategoriAndGaji(kategoriRaw, gajiRaw) {
+  let kategoriList = [];
+  if (Array.isArray(kategoriRaw)) {
+    kategoriList = kategoriRaw;
+  } else if (typeof kategoriRaw === 'string' && kategoriRaw.trim() !== '') {
+    try {
+      kategoriList = JSON.parse(kategoriRaw);
+      if (!Array.isArray(kategoriList)) kategoriList = [kategoriRaw];
+    } catch (e) {
+      kategoriList = kategoriRaw.includes(',') ? kategoriRaw.split(',').map(k => k.trim()) : [kategoriRaw];
+    }
+  }
+
+  let gajiResult = {};
+  if (typeof gajiRaw === 'object' && gajiRaw !== null && !Array.isArray(gajiRaw)) {
+    gajiResult = gajiRaw;
+  } else {
+    try {
+      const parsedGaji = typeof gajiRaw === 'string' ? JSON.parse(gajiRaw) : gajiRaw;
+      if (typeof parsedGaji === 'object' && !Array.isArray(parsedGaji)) {
+        gajiResult = parsedGaji;
+      } else if (Array.isArray(parsedGaji)) {
+        kategoriList.forEach((kat, idx) => {
+          gajiResult[kat] = parseInt(parsedGaji[idx]) || 0;
+        });
+      } else {
+        kategoriList.forEach(kat => {
+          gajiResult[kat] = parseInt(parsedGaji) || 0;
+        });
+      }
+    } catch (e) {
+      kategoriList.forEach(kat => {
+        gajiResult[kat] = parseInt(gajiRaw) || 0;
+      });
+    }
+  }
+
+  return { kategoriList, gajiResult };
 }
 
 // =================================================================
@@ -146,7 +199,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 // =================================================================
-// 📋 3. API CANDIDATES (CRUD)
+// 📋 3. API CANDIDATES (CRUD MULTI-KATEGORI & MULTI-GAJI)
 // =================================================================
 
 app.get('/api/candidates', (req, res) => {
@@ -154,7 +207,7 @@ app.get('/api/candidates', (req, res) => {
   res.json(candidates);
 });
 
-// POST: Tambah Kandidat Baru (ID Terikat Kode Kategori)
+// POST: Tambah Kandidat Baru
 app.post('/api/candidates', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -163,8 +216,8 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
     const { nama, umur, asal, keahlian, pengalaman, gaji, kategori, status, noHp, tinggi, berat } = req.body;
     const candidates = getCandidates();
 
-    // Generate ID sesuai pilihan dropdown kategori
-    const newId = generateCategoryId(kategori || 'Asisten Rumah Tangga (ART)', candidates);
+    const { kategoriList, gajiResult } = parseKategoriAndGaji(kategori, gaji);
+    const newId = generateCategoryId(kategoriList, candidates);
 
     let fotoPath = '';
     let fotoCvPath = '';
@@ -185,12 +238,12 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
       noHp: noHp || '',
       tinggi: parseInt(tinggi) || 0,
       berat: parseInt(berat) || 0,
-      kategori: kategori || 'Asisten Rumah Tangga (ART)',
+      kategori: kategoriList,
+      gaji: gajiResult,
       umur: parseInt(umur) || 0,
       asal: asal || '',
       keahlian: keahlian || '',
       pengalaman: parseInt(pengalaman) || 0,
-      gaji: parseInt(gaji) || 0,
       status: status || 'READY WORK',
       foto: fotoPath,
       fotoCv: fotoCvPath,
@@ -242,18 +295,30 @@ app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
       fotoCvPath = `/uploads/${req.files.fotoCv[0].filename}`;
     }
 
+    let updatedKategori = currentCandidate.kategori;
+    let updatedGaji = currentCandidate.gaji;
+
+    if (kategori !== undefined || gaji !== undefined) {
+      const parsed = parseKategoriAndGaji(
+        kategori !== undefined ? kategori : currentCandidate.kategori,
+        gaji !== undefined ? gaji : currentCandidate.gaji
+      );
+      updatedKategori = parsed.kategoriList;
+      updatedGaji = parsed.gajiResult;
+    }
+
     candidates[index] = {
       ...currentCandidate,
       nama: nama !== undefined ? nama : currentCandidate.nama,
       noHp: noHp !== undefined ? noHp : currentCandidate.noHp,
       tinggi: tinggi ? parseInt(tinggi) : currentCandidate.tinggi,
       berat: berat ? parseInt(berat) : currentCandidate.berat,
-      kategori: kategori !== undefined ? kategori : currentCandidate.kategori,
+      kategori: updatedKategori,
+      gaji: updatedGaji,
       umur: umur ? parseInt(umur) : currentCandidate.umur,
       asal: asal !== undefined ? asal : currentCandidate.asal,
       keahlian: keahlian !== undefined ? keahlian : currentCandidate.keahlian,
       pengalaman: pengalaman ? parseInt(pengalaman) : currentCandidate.pengalaman,
-      gaji: gaji ? parseInt(gaji) : currentCandidate.gaji,
       status: status !== undefined ? status : currentCandidate.status,
       foto: fotoPath,
       fotoCv: fotoCvPath,
@@ -320,6 +385,5 @@ app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
 app.listen(PORT, () => {
   console.log(`==================================================`);
   console.log(`🚀 Server Berjalan di Port ${PORT}!`);
-  console.log(`📍 Prefix ID: ART, BS, PL, DR, TK, SC`);
   console.log(`==================================================`);
 });
