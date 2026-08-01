@@ -141,6 +141,9 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
+    // 📌 ATUR NOMOR HP ADMIN YAYASAN DI SINI (Ganti dengan nomor WhatsApp Admin Anda)
+    const NO_HP_ADMIN = "081234567890"; 
+
     let allCandidates = [];
     let isAdminLoggedIn = false;
 
@@ -234,6 +237,8 @@
         return;
       }
 
+      const formattedAdminHp = NO_HP_ADMIN.replace(/[^0-9]/g, '');
+
       container.innerHTML = candidates.map(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
 
@@ -263,6 +268,9 @@
         }
 
         const cvUrl = item.fotoCv || item.foto || '';
+
+        // Pesan otomatis untuk Admin
+        const waMessage = encodeURIComponent(`Halo Admin Yayasan Sentuhan Kasih, saya tertarik untuk menyalurkan kandidat:\n\n*Nama:* ${item.nama}\n*ID Kandidat:* #${item.id}\n\nMohon informasi lebih lanjut.`);
 
         return `
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col justify-between hover:shadow-md transition-all">
@@ -302,8 +310,9 @@
                 </button>
               ` : ''}
 
-              <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}?text=Halo%20Yayasan%20Sentuhan%20Kasih,%20saya%20tertarik%20dengan%20kandidat%20${item.nama}%20(ID:%20${item.id})" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                💬 Hubungi via WhatsApp
+              <!-- Tombol WhatsApp Mengarah ke Admin Yayasan -->
+              <a href="https://wa.me/${formattedAdminHp}?text=${waMessage}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                💬 Hubungi Admin via WhatsApp
               </a>
             </div>
           </div>
