@@ -6,19 +6,39 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Direktori penyimpanan file & JSON
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
-const DATA_FILE = path.join(__dirname, 'candidates.json');
+// ------------------- DIREKTORI & INITIALIZATION -------------------
+// Folder uploads berada di dalam folder public
+const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
+const DATA_DIR = path.join(__dirname, 'data');
+const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
+// Buat folder public/uploads jika belum ada
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
+// Buat folder data jika belum ada
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Buat file candidates.json jika belum ada
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
 }
 
-// Config Multer
+// ------------------- DUMMY SESSION SYSTEM -------------------
+let isSessionAdminLoggedIn = false; 
+
+// Middleware Cek Auth Admin
+const authAdminMiddleware = (req, res, next) => {
+  if (isSessionAdminLoggedIn) {
+    return next();
+  }
+  return res.status(401).json({ success: false, message: 'Akses ditolak. Silakan login terlebih dahulu.' });
+};
+
+// ------------------- MULTER CONFIG (UPLOAD FILE) -------------------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -28,19 +48,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Middleware
+// ------------------- MIDDLEWARE EXPRESS -------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(UPLOAD_DIR));
-app.use(express.static(path.join(__dirname, 'public'))); // Sesuaikan dengan folder statis Anda
 
-// Auth Middleware (Dummy / Sesuaikan dengan auth admin Anda)
-const authAdmin = (req, res, next) => {
-  // Jika menggunakan session/cookie, cek autentikasi di sini
-  next();
-};
+// Serving Static Files dari folder public (otomatis mencakup /uploads, /logo.png, dll)
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Helper Read/Write Data JSON
+// ------------------- HELPER DATA JSON -------------------
 function getCandidates() {
   try {
     const data = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -54,16 +69,66 @@ function saveCandidates(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// ------------------- API ROUTES -------------------
+// =================================================================
+// 🌐 1. ROUTING HALAMAN WEB
+// =================================================================
 
-// 1. GET ALL CANDIDATES
+// Route Utama -> index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+// Route Admin -> login.html / admin.html
+app.get('/admin', (req, res) => {
+  if (isSessionAdminLoggedIn) {
+    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+  } else {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+  }
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
+
+app.get('/dashboard', authAdminMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+// =================================================================
+// 🔐 2. API AUTHENTICATION
+// =================================================================
+
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+
+  if (username === 'admin' && password === 'admin123') {
+    isSessionAdminLoggedIn = true;
+    return res.json({ success: true, message: 'Login berhasil!' });
+  }
+
+  return res.status(401).json({ success: false, message: 'Username atau password salah!' });
+});
+
+app.get('/api/check-auth', (req, res) => {
+  res.json({ isAdmin: isSessionAdminLoggedIn });
+});
+
+app.post('/api/logout', (req, res) => {
+  isSessionAdminLoggedIn = false;
+  res.json({ success: true, message: 'Berhasil Logout' });
+});
+
+// =================================================================
+// 📋 3. API CANDIDATES (CRUD)
+// =================================================================
+
 app.get('/api/candidates', (req, res) => {
   const candidates = getCandidates();
   res.json(candidates);
 });
 
-// 2. CREATE NEW CANDIDATE (POST)
-app.post('/api/candidates', authAdmin, upload.fields([
+app.post('/api/candidates', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
 ]), (req, res) => {
@@ -83,7 +148,7 @@ app.post('/api/candidates', authAdmin, upload.fields([
     if (req.files && req.files.fotoCv && req.files.fotoCv[0]) {
       fotoCvPath = `/uploads/${req.files.fotoCv[0].filename}`;
     } else {
-      fotoCvPath = fotoPath; // Fallback jika CV tidak diunggah
+      fotoCvPath = fotoPath;
     }
 
     const newCandidate = {
@@ -109,12 +174,11 @@ app.post('/api/candidates', authAdmin, upload.fields([
 
     res.json({ success: true, message: 'Data kandidat berhasil ditambahkan!', data: newCandidate });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Gagal menambahkan data kandidat.' });
+    res.status(500).json({ success: false, message: 'Gagal menambahkan data.' });
   }
 });
 
-// 3. EDIT CANDIDATE LENGKAP (PUT)
-app.put('/api/candidates/:id', authAdmin, upload.fields([
+app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
 ]), (req, res) => {
@@ -123,7 +187,7 @@ app.put('/api/candidates/:id', authAdmin, upload.fields([
     const { nama, umur, asal, keahlian, pengalaman, gaji, kategori, status, noHp, tinggi, berat } = req.body;
 
     const candidates = getCandidates();
-    const index = candidates.findIndex(c => c.id === id);
+    const index = candidates.findIndex(c => String(c.id) === String(id));
 
     if (index === -1) {
       return res.status(404).json({ success: false, message: 'Kandidat tidak ditemukan.' });
@@ -131,7 +195,6 @@ app.put('/api/candidates/:id', authAdmin, upload.fields([
 
     const currentCandidate = candidates[index];
 
-    // Cek jika ada foto profil baru
     let fotoPath = currentCandidate.foto;
     if (req.files && req.files.foto && req.files.foto[0]) {
       if (currentCandidate.foto && currentCandidate.foto.startsWith('/uploads/')) {
@@ -141,7 +204,6 @@ app.put('/api/candidates/:id', authAdmin, upload.fields([
       fotoPath = `/uploads/${req.files.foto[0].filename}`;
     }
 
-    // Cek jika ada file CV baru
     let fotoCvPath = currentCandidate.fotoCv;
     if (req.files && req.files.fotoCv && req.files.fotoCv[0]) {
       if (currentCandidate.fotoCv && currentCandidate.fotoCv.startsWith('/uploads/') && currentCandidate.fotoCv !== currentCandidate.foto) {
@@ -151,7 +213,6 @@ app.put('/api/candidates/:id', authAdmin, upload.fields([
       fotoCvPath = `/uploads/${req.files.fotoCv[0].filename}`;
     }
 
-    // Update Data
     candidates[index] = {
       ...currentCandidate,
       nama: nama !== undefined ? nama : currentCandidate.nama,
@@ -177,14 +238,13 @@ app.put('/api/candidates/:id', authAdmin, upload.fields([
   }
 });
 
-// 4. UPDATE STATUS QUICK ACTION (PATCH)
-app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
+app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
     const candidates = getCandidates();
-    const index = candidates.findIndex(c => c.id === id);
+    const index = candidates.findIndex(c => String(c.id) === String(id));
 
     if (index === -1) {
       return res.status(404).json({ success: false, message: 'Kandidat tidak ditemukan.' });
@@ -199,15 +259,13 @@ app.patch('/api/candidates/:id/status', authAdmin, (req, res) => {
   }
 });
 
-// 5. DELETE CANDIDATE (DELETE)
-app.delete('/api/candidates/:id', authAdmin, (req, res) => {
+app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     let candidates = getCandidates();
-    const target = candidates.find(c => c.id === id);
+    const target = candidates.find(c => String(c.id) === String(id));
 
     if (target) {
-      // Hapus foto dari server
       if (target.foto && target.foto.startsWith('/uploads/')) {
         const file = path.join(UPLOAD_DIR, target.foto.replace('/uploads/', ''));
         if (fs.existsSync(file)) fs.unlinkSync(file);
@@ -218,7 +276,7 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
       }
     }
 
-    candidates = candidates.filter(c => c.id !== id);
+    candidates = candidates.filter(c => String(c.id) !== String(id));
     saveCandidates(candidates);
 
     res.json({ success: true, message: 'Kandidat berhasil dihapus!' });
@@ -227,9 +285,12 @@ app.delete('/api/candidates/:id', authAdmin, (req, res) => {
   }
 });
 
-// 6. LOGOUT API
-app.post('/api/logout', (req, res) => {
-  res.json({ success: true, message: 'Logout berhasil' });
+// ------------------- RUN SERVER -------------------
+app.listen(PORT, () => {
+  console.log(`==================================================`);
+  console.log(`🚀 Server Berjalan!`);
+  console.log(`📍 Directori Upload : ${UPLOAD_DIR}`);
+  console.log(`📍 File JSON Data   : ${DATA_FILE}`);
+  console.log(`📍 URL Katalog Utama: http://localhost:${PORT}/`);
+  console.log(`==================================================`);
 });
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
