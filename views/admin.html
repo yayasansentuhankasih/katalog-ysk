@@ -36,7 +36,6 @@
     
     <!-- HEADER -->
     <header class="flex flex-col md:flex-row justify-between items-center bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-teal-100/80 gap-4">
-      <!-- Logo & Title -->
       <div class="flex items-center gap-3.5">
         <img src="/logo.png" alt="Logo Yayasan" class="w-11 h-11 object-contain rounded-xl shadow-sm bg-white p-1 border border-teal-100" onerror="this.style.display='none'">
         <div>
@@ -45,12 +44,10 @@
         </div>
       </div>
 
-      <!-- Action Buttons Header -->
       <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
         <a href="/" class="text-xs bg-white hover:bg-slate-50 text-slate-700 hover:text-teal-800 px-4 py-2.5 rounded-xl border border-slate-200 font-bold shadow-sm transition-all flex items-center gap-2">
           🌐 Lihat Katalog Utama
         </a>
-        
         <button onclick="logoutAdmin()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2.5 rounded-xl border border-rose-200 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
           🔓 Logout Admin
         </button>
@@ -60,7 +57,7 @@
     <!-- MAIN GRID LAYOUT -->
     <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- FORM INPUT KANDIDAT -->
+      <!-- FORM INPUT KANDIDAT BARU -->
       <section class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-teal-100/80 lg:col-span-1 flex flex-col justify-between">
         <div>
           <h2 class="text-sm font-extrabold text-teal-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2 uppercase tracking-wider">
@@ -68,16 +65,14 @@
           </h2>
           
           <form id="form-kandidat" onsubmit="simpanData(event)" class="space-y-3.5 text-xs">
-            <!-- Nama Lengkap -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
-              <input type="text" id="input-nama" required placeholder="Masukkan nama lengkap..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+              <input type="text" id="input-nama" required placeholder="Masukkan nama lengkap..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
-            <!-- Kategori Pekerjaan -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan</label>
-              <select id="input-kategori" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none bg-white transition-all text-slate-800">
+              <select id="input-kategori" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all text-slate-800">
                 <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
                 <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
                 <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
@@ -87,64 +82,56 @@
               </select>
             </div>
 
-            <!-- Nomor HP / WA -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Nomor HP / WA Kandidat</label>
-              <input type="text" id="input-nohp" required placeholder="Contoh: 081234567890" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+              <input type="text" id="input-nohp" required placeholder="Contoh: 081234567890" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
-            <!-- Umur & Pengalaman -->
             <div class="grid grid-cols-2 gap-2.5">
               <div>
                 <label class="font-bold text-slate-700 block mb-1">Umur (Tahun)</label>
-                <input type="number" id="input-umur" placeholder="25" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+                <input type="number" id="input-umur" placeholder="25" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
               </div>
               <div>
                 <label class="font-bold text-slate-700 block mb-1">Pengalaman (Thn)</label>
-                <input type="number" id="input-pengalaman" placeholder="2" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+                <input type="number" id="input-pengalaman" placeholder="2" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
               </div>
             </div>
 
-            <!-- Tinggi & Berat Badan -->
             <div class="grid grid-cols-2 gap-2.5">
               <div>
                 <label class="font-bold text-slate-700 block mb-1">Tinggi (cm)</label>
-                <input type="number" id="input-tinggi" placeholder="160" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+                <input type="number" id="input-tinggi" placeholder="160" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
               </div>
               <div>
                 <label class="font-bold text-slate-700 block mb-1">Berat (kg)</label>
-                <input type="number" id="input-berat" placeholder="55" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+                <input type="number" id="input-berat" placeholder="55" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
               </div>
             </div>
 
-            <!-- Kota Asal -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
-              <input type="text" id="input-asal" placeholder="Contoh: Lampung" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+              <input type="text" id="input-asal" placeholder="Contoh: Lampung" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
-            <!-- Keahlian Ringkas -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Keahlian Ringkas</label>
-              <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+              <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
-            <!-- Ekspektasi Gaji -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
-              <input type="number" id="input-gaji" placeholder="Contoh: 2500000" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800">
+              <input type="number" id="input-gaji" placeholder="Contoh: 2500000" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
             </div>
 
-            <!-- Status Availability -->
             <div>
               <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
-              <select id="input-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none bg-white transition-all text-slate-800">
+              <select id="input-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all text-slate-800">
                 <option value="READY WORK">READY WORK</option>
                 <option value="TER-SALUR">TER-SALUR</option>
               </select>
             </div>
 
-            <!-- Upload File Area -->
             <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-2.5 mt-2">
               <div>
                 <label class="font-bold text-slate-700 block mb-1">🖼️ Upload Foto Profil</label>
@@ -157,7 +144,6 @@
               </div>
             </div>
 
-            <!-- Submit Button -->
             <button type="submit" id="btn-submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white font-extrabold rounded-xl transition-all shadow-md shadow-orange-500/20 text-xs mt-3 flex items-center justify-center gap-2 cursor-pointer">
               💾 Simpan Data & Upload File
             </button>
@@ -208,12 +194,116 @@
 
   </div>
 
+  <!-- 📌 MODAL POPUP EDIT KANDIDAT -->
+  <div id="modal-edit" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto border border-teal-100">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+        <h3 class="text-base font-extrabold text-teal-950">✏️ Edit Data Kandidat (<span id="edit-id-display" class="text-teal-600"></span>)</h3>
+        <button onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-edit-kandidat" onsubmit="submitEditData(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="edit-id">
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
+          <input type="text" id="edit-nama" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan</label>
+            <select id="edit-kategori" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
+              <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
+              <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
+              <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
+              <option value="Driver">Driver</option>
+              <option value="Tukang Kebun">Tukang Kebun</option>
+              <option value="Security">Security</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
+            <select id="edit-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
+              <option value="READY WORK">READY WORK</option>
+              <option value="TER-SALUR">TER-SALUR</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Nomor HP / WA</label>
+          <input type="text" id="edit-nohp" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Umur (Tahun)</label>
+            <input type="number" id="edit-umur" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Pengalaman (Thn)</label>
+            <input type="number" id="edit-pengalaman" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Tinggi (cm)</label>
+            <input type="number" id="edit-tinggi" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Berat (kg)</label>
+            <input type="number" id="edit-berat" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
+            <input type="text" id="edit-asal" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
+            <input type="number" id="edit-gaji" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Keahlian Ringkas</label>
+          <input type="text" id="edit-keahlian" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none">
+        </div>
+
+        <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-2.5">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">🖼️ Ganti Foto Profil (Biarkan kosong jika tidak diubah)</label>
+            <input type="file" id="edit-foto" accept="image/*" class="w-full p-1 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-teal-100 file:text-teal-800 cursor-pointer">
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">📄 Ganti Dokumen CV (Biarkan kosong jika tidak diubah)</label>
+            <input type="file" id="edit-cv" accept="image/*" class="w-full p-1 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-teal-100 file:text-teal-800 cursor-pointer">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl cursor-pointer">Batal</button>
+          <button type="submit" id="btn-submit-edit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl cursor-pointer">💾 Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
   <script>
+    let globalCandidatesData = [];
+
     async function loadDataAdmin() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());
         if (res.ok) {
           const data = await res.json();
+          globalCandidatesData = data;
           renderTabel(data);
         } else {
           alert("Gagal memuat data dari server.");
@@ -234,7 +324,7 @@
       data.forEach(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
         const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
-    
+        
         html += `
           <tr class="hover:bg-teal-50/40 transition-colors">
             <td class="p-3.5 font-bold text-slate-700">#${item.id}</td>
@@ -242,7 +332,6 @@
             <td class="p-3.5 text-slate-600 font-medium">${item.kategori || '-'}</td>
             <td class="p-3.5 font-bold text-teal-800">📱 ${item.noHp || '-'}</td>
             <td class="p-3.5">
-              <!-- Tombol Interaktif untuk Mengubah Status -->
               <button onclick="gantiStatus('${item.id}', '${statusText}')" 
                       title="Klik untuk mengubah status"
                       class="px-2.5 py-1 text-[10px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm active:scale-95 ${
@@ -255,7 +344,10 @@
                 <span class="text-[8px] opacity-60">🔄</span>
               </button>
             </td>
-            <td class="p-3.5 text-center">
+            <td class="p-3.5 text-center flex items-center justify-center gap-1.5">
+              <button onclick="bukaModalEdit('${item.id}')" class="px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-[11px]">
+                ✏️ Edit
+              </button>
               <button onclick="hapusKandidat('${item.id}')" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-colors cursor-pointer text-[11px]">
                 🗑️ Hapus
               </button>
@@ -266,9 +358,87 @@
       tbody.innerHTML = html;
     }
 
+    // Modal Edit Handler
+    function bukaModalEdit(id) {
+      const item = globalCandidatesData.find(c => c.id === id);
+      if (!item) return alert('Data tidak ditemukan');
+
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('edit-id-display').innerText = item.id;
+      document.getElementById('edit-nama').value = item.nama || '';
+      document.getElementById('edit-kategori').value = item.kategori || 'Asisten Rumah Tangga (ART)';
+      document.getElementById('edit-status').value = item.status || 'READY WORK';
+      document.getElementById('edit-nohp').value = item.noHp || '';
+      document.getElementById('edit-umur').value = item.umur || '';
+      document.getElementById('edit-pengalaman').value = item.pengalaman || '';
+      document.getElementById('edit-tinggi').value = item.tinggi || '';
+      document.getElementById('edit-berat').value = item.berat || '';
+      document.getElementById('edit-asal').value = item.asal || '';
+      document.getElementById('edit-gaji').value = item.gaji || '';
+      document.getElementById('edit-keahlian').value = item.keahlian || '';
+      document.getElementById('edit-foto').value = '';
+      document.getElementById('edit-cv').value = '';
+
+      document.getElementById('modal-edit').classList.remove('hidden');
+    }
+
+    function tutupModalEdit() {
+      document.getElementById('modal-edit').classList.add('hidden');
+    }
+
+    async function submitEditData(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const btn = document.getElementById('btn-submit-edit');
+      
+      btn.disabled = true;
+      btn.innerText = '⌛ Menyimpan...';
+
+      const formData = new FormData();
+      formData.append('nama', document.getElementById('edit-nama').value);
+      formData.append('kategori', document.getElementById('edit-kategori').value);
+      formData.append('status', document.getElementById('edit-status').value);
+      formData.append('noHp', document.getElementById('edit-nohp').value);
+      formData.append('umur', document.getElementById('edit-umur').value);
+      formData.append('pengalaman', document.getElementById('edit-pengalaman').value);
+      formData.append('tinggi', document.getElementById('edit-tinggi').value);
+      formData.append('berat', document.getElementById('edit-berat').value);
+      formData.append('asal', document.getElementById('edit-asal').value);
+      formData.append('gaji', document.getElementById('edit-gaji').value);
+      formData.append('keahlian', document.getElementById('edit-keahlian').value);
+
+      const fileFoto = document.getElementById('edit-foto').files[0];
+      const fileCv = document.getElementById('edit-cv').files[0];
+
+      if (fileFoto) formData.append('foto', fileFoto);
+      if (fileCv) formData.append('fotoCv', fileCv);
+
+      try {
+        const res = await fetch(`/api/candidates/${id}`, {
+          method: 'PUT',
+          body: formData
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          alert('✅ Data kandidat berhasil diperbarui!');
+          tutupModalEdit();
+          loadDataAdmin();
+        } else {
+          alert('❌ Gagal: ' + (result.message || 'Terjadi kesalahan'));
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan koneksi server.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '💾 Simpan Perubahan';
+      }
+    }
+
     async function simpanData(e) {
       e.preventDefault();
-  
+      
       const btn = document.getElementById('btn-submit');
       btn.disabled = true;
       btn.innerText = '⌛ Mengunggah File...';
