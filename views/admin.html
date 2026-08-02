@@ -482,8 +482,21 @@
           <tr class="hover:bg-teal-50/40 transition-colors align-middle">
             <td class="p-3.5 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
             <td class="p-3.5">
-              <div class="font-bold text-slate-900 leading-snug">${item.nama || '-'}</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
+              <div class="flex items-center gap-3">
+                <!-- ➕ ELEMEN FOTO BARU DI SINI -->
+                <div class="relative group shrink-0">
+                  <img src="${fotoUrl}" 
+                       alt="${item.nama || 'Kandidat'}" 
+                       onerror="this.src='https://via.placeholder.com/150?text=No+Image'"
+                       class="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-xs group-hover:scale-105 transition-transform cursor-pointer"
+                       onclick="window.open('${fotoUrl}', '_blank')" 
+                       title="Klik untuk melihat foto ukuran penuh">
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 leading-snug">${item.nama || '-'}</div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
+                </div>
+              </div>
             </td>
             <td class="p-3.5">
               <div class="font-bold text-teal-900 text-[11px]">${kategoriText}</div>
