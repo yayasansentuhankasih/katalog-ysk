@@ -8,28 +8,53 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Font: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display untuk sentuhan elegan & mewah -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
     body { 
-      font-family: 'Inter', sans-serif; 
-    } 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+    .font-serif-title {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* BACKGROUND ELEGAN & MEWAH (Warm Cream / Pearl Luxe Tone) */
     .bg-katalog-theme {
-      background-color: #FFE4E1 !important;
+      background-color: #FAF8F5;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(255, 228, 225, 1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(255, 218, 214, 0.6) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.7) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 78, 59, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(245, 230, 211, 0.5) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.9) 0px, transparent 50%);
       background-attachment: fixed;
     }
 
-    /* POLA PATTERN HALUS & SOFT */
+    /* POLA DEKORATIF ORNAMEN MEWAH */
     .bg-pattern {
-      background-image: radial-gradient(#0d9488 0.65px, transparent 0.65px);
-      background-size: 24px 24px;
-      opacity: 0.08;
+      background-image: radial-gradient(#d4af37 0.5px, transparent 0.5px);
+      background-size: 32px 32px;
+      opacity: 0.12;
+    }
+
+    /* GRADIENT TEKS GOLD ELEGAN */
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #b48811 0%, #a2790d 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ANIMASI SHIMMER / SKELETON LOADING */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-box {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
     }
   </style>
 </head>
@@ -41,61 +66,68 @@
   <!-- CONTAINER UTAMA -->
   <div class="relative z-10 flex-grow flex flex-col justify-between">
 
-    <!-- HEADER -->
-    <header class="pt-6 pb-4 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-4">
-      <!-- Logo & Nama Yayasan -->
-      <div class="flex items-center gap-3">
-        <img src="/logo.png" alt="Logo Yayasan" class="w-11 h-11 object-contain rounded-lg shadow-sm bg-white p-1" onerror="this.style.display='none'">
+    <!-- HEADER MEWAH -->
+    <header class="pt-8 pb-6 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <!-- Logo & Brand Yayasan -->
+      <div class="flex items-center gap-3.5 bg-white/80 backdrop-blur-md p-2.5 pr-5 rounded-2xl border border-amber-200/60 shadow-xs">
+        <img src="/logo.png" alt="Logo Yayasan" class="w-12 h-12 object-contain rounded-xl bg-gradient-to-br from-emerald-800 to-teal-950 p-1.5 shadow-sm" onerror="this.style.display='none'">
         <div>
-          <h2 class="text-sm font-extrabold text-slate-800 leading-tight">Yayasan</h2>
-          <h2 class="text-xs font-bold text-teal-700 leading-tight">Sentuhan Kasih</h2>
+          <h2 class="text-xs font-bold uppercase tracking-widest text-amber-700">Yayasan</h2>
+          <h2 class="text-base font-extrabold text-emerald-950 tracking-tight leading-none">Sentuhan Kasih</h2>
         </div>
       </div>
 
-      <!-- Judul Utama -->
+      <!-- Judul Utama Halaman -->
       <div class="text-center">
-        <h1 class="text-2xl md:text-3xl font-extrabold text-teal-900 tracking-wide uppercase">
-          KATALOG KANDIDAT READY
+        <span class="inline-block px-3 py-1 bg-amber-100/80 text-amber-900 border border-amber-200/60 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-1.5 shadow-2xs">
+          ✨ Portal Resmi Penyaluran
+        </span>
+        <h1 class="font-serif-title text-3xl sm:text-4xl font-bold text-emerald-950 tracking-tight">
+          Katalog <span class="text-gold-gradient italic">Kandidat Ready</span>
         </h1>
-        <p class="text-xs text-slate-500 mt-0.5">Penyaluran Tenaga Kerja Terpercaya & Profesional</p>
+        <p class="text-xs text-slate-500 font-medium mt-1">Solusi Tenaga Kerja Profesional, Terlatih & Terpercaya</p>
       </div>
 
       <!-- Tombol Navigasi Admin & Auth -->
-      <div class="flex flex-wrap items-center justify-center gap-2">
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
         <!-- Container Dynamic WA Admin Header -->
-        <div id="header-wa-container" class="flex gap-1.5 flex-wrap"></div>
+        <div id="header-wa-container" class="flex gap-2 flex-wrap"></div>
 
         <a id="btn-dashboard" 
            href="/admin" 
-           class="hidden text-xs px-3.5 py-2 bg-teal-800 hover:bg-teal-900 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
-          🛠️ Dashboard Admin
+           class="hidden text-xs px-4 py-2.5 bg-gradient-to-r from-emerald-800 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border border-emerald-700/50">
+          ⚙️ Dashboard
         </a>
 
         <button 
           id="btn-auth" 
           onclick="handleAuthClick()" 
-          class="text-xs px-3.5 py-2 bg-white/90 hover:bg-white text-slate-700 font-medium rounded-xl border border-teal-100 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+          class="text-xs px-4 py-2.5 bg-white/90 hover:bg-white text-emerald-950 font-bold rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer">
           🔒 Login Admin
         </button>
       </div>
     </header>
 
     <!-- CONTENT BODY -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 w-full flex-grow">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 w-full flex-grow">
       
-      <!-- FILTER BAR -->
-      <div class="bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-teal-100 shadow-sm mb-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 items-center">
+      <!-- FILTER BAR ELEGANT -->
+      <div class="bg-white/85 backdrop-blur-lg p-4 sm:p-5 rounded-3xl border border-amber-100 shadow-md mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-center">
           
-          <div>
+          <!-- Input Search -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">🔍</span>
             <input type="text" id="filter-search" oninput="filterData()" 
-                   placeholder="Cari Nama/ID/Keahlian..." 
-                   class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
+                   placeholder="Cari Nama, ID, Keahlian..." 
+                   class="w-full text-xs pl-9 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none bg-slate-50/50 text-slate-800 placeholder-slate-400 font-medium transition-all">
           </div>
 
+          <!-- Dropdown Kategori -->
           <div>
-            <select id="filter-kategori" onchange="filterData()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
-              <option value="Semua">Semua Kategori</option>
+            <select id="filter-kategori" onchange="filterData()" class="w-full text-xs px-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none bg-slate-50/50 text-slate-800 font-medium transition-all cursor-pointer">
+              <option value="Semua">📌 Semua Kategori Pekerjaan</option>
               <option value="Asisten Rumah Tangga (ART)">Asisten Rumah Tangga (ART)</option>
               <option value="Baby Sitter / Pengasuh">Baby Sitter / Pengasuh</option>
               <option value="Perawat Lansia / Caregiver">Perawat Lansia / Caregiver</option>
@@ -105,17 +137,19 @@
             </select>
           </div>
 
+          <!-- Dropdown Pengalaman -->
           <div>
-            <select id="filter-pengalaman" onchange="filterData()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-slate-700">
-              <option value="Semua">Pengalaman: Semua</option>
+            <select id="filter-pengalaman" onchange="filterData()" class="w-full text-xs px-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none bg-slate-50/50 text-slate-800 font-medium transition-all cursor-pointer">
+              <option value="Semua">⏳ Semua Pengalaman</option>
               <option value="kurang1">Pengalaman: &lt; 1 Tahun</option>
               <option value="1sampai3">Pengalaman: 1 - 3 Tahun</option>
               <option value="lebih3">Pengalaman: &gt; 3 Tahun</option>
             </select>
           </div>
 
+          <!-- Tombol Reset Filter -->
           <div>
-            <button onclick="resetFilter()" class="w-full text-xs p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-lg transition-all border border-slate-200">
+            <button onclick="resetFilter()" class="w-full text-xs py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200/80 active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer">
               🔄 Reset Filter
             </button>
           </div>
@@ -124,60 +158,88 @@
       </div>
 
       <!-- GRID LIST KANDIDAT -->
-      <div id="kandidat-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        <div class="col-span-full text-center py-12 text-slate-400 font-medium text-sm">
-          Memuat data kandidat...
+      <div id="kandidat-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        
+        <!-- Skeleton Loading State -->
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs space-y-3">
+          <div class="h-48 skeleton-box rounded-2xl"></div>
+          <div class="h-5 skeleton-box rounded-md w-3/4"></div>
+          <div class="h-4 skeleton-box rounded-md w-1/2"></div>
+          <div class="h-20 skeleton-box rounded-xl"></div>
         </div>
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs space-y-3 hidden sm:block">
+          <div class="h-48 skeleton-box rounded-2xl"></div>
+          <div class="h-5 skeleton-box rounded-md w-3/4"></div>
+          <div class="h-4 skeleton-box rounded-md w-1/2"></div>
+          <div class="h-20 skeleton-box rounded-xl"></div>
+        </div>
+
       </div>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-white/80 border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
-      <p>© 2026 Yayasan Sentuhan Kasih. Seluruh Hak Cipta Dilindungi.</p>
+    <!-- FOOTER MEWAH -->
+    <footer class="bg-white/80 backdrop-blur-md border-t border-amber-100/80 py-6 text-center text-xs text-slate-500 mt-12">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-emerald-900">Yayasan Sentuhan Kasih</span>
+          <span class="text-slate-300">•</span>
+          <span>Penyaluran Resmi & Profesional</span>
+        </div>
+        <p>© 2026 Yayasan Sentuhan Kasih. Hak Cipta Dilindungi.</p>
+      </div>
     </footer>
 
   </div>
 
-  <!-- 📌 MODAL VIEW CV -->
-  <div id="modal-cv" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-5 max-h-[90vh] flex flex-col border border-teal-100">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
-        <h3 class="text-sm font-extrabold text-teal-950">📄 Dokumen CV Kandidat (<span id="modal-cv-nama"></span>)</h3>
-        <button onclick="tutupModalCv()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
+  <!-- 📌 MODAL VIEW CV ELEGAN -->
+  <div id="modal-cv" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 transition-opacity">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] flex flex-col border border-amber-100 transform transition-all">
+      <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase text-amber-700 tracking-wider">Berkas Resmi</span>
+          <h3 class="text-base font-extrabold text-emerald-950">Dokumen CV - <span id="modal-cv-nama" class="text-amber-800"></span></h3>
+        </div>
+        <button onclick="tutupModalCv()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 flex items-center justify-center font-bold text-sm transition-all cursor-pointer">✕</button>
       </div>
-      <div class="flex-grow overflow-y-auto flex items-center justify-center bg-slate-50 rounded-xl p-2 border border-slate-200">
-        <img id="modal-cv-img" src="" alt="Dokumen CV" class="max-w-full max-h-[70vh] object-contain rounded-lg">
+      
+      <div class="flex-grow overflow-y-auto flex items-center justify-center bg-slate-950/5 rounded-2xl p-2 border border-slate-100 min-h-[300px]">
+        <img id="modal-cv-img" src="" alt="Dokumen CV" class="max-w-full max-h-[65vh] object-contain rounded-xl shadow-sm">
       </div>
-      <div class="pt-3 border-t border-slate-100 mt-3 flex justify-end">
-        <button onclick="tutupModalCv()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer">Tutup</button>
+
+      <div class="pt-4 border-t border-slate-100 mt-4 flex justify-end">
+        <button onclick="tutupModalCv()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer">Tutup Dokumen</button>
       </div>
     </div>
   </div>
 
-  <!-- 📌 MODAL PILIH ADMIN WA -->
-  <div id="modal-pilih-admin" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-5 border border-teal-100 text-center">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
-        <h3 class="text-sm font-extrabold text-slate-800">💬 Pilih Admin WhatsApp</h3>
-        <button onclick="tutupModalAdmin()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
-      </div>
+  <!-- 📌 MODAL PILIH ADMIN WA MEWAH -->
+  <div id="modal-pilih-admin" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 transition-opacity">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 border border-amber-100 text-center transform transition-all">
       
-      <p class="text-xs text-slate-500 mb-4">Silakan pilih salah satu Admin untuk menanyakan kandidat <b id="modal-nama-kandidat" class="text-teal-800"></b>:</p>
+      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center mx-auto mb-3 text-xl shadow-2xs">
+        💬
+      </div>
+
+      <h3 class="text-base font-extrabold text-emerald-950 mb-1">Hubungi Admin Konsultasi</h3>
+      <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+        Silakan pilih Admin layanan untuk menanyakan kandidat <b id="modal-nama-kandidat" class="text-emerald-800 underline decoration-amber-400"></b>:
+      </p>
 
       <div id="modal-admin-list" class="space-y-2.5">
         <!-- List Tombol Admin dimasukkan via JavaScript -->
       </div>
 
-      <div class="mt-4 pt-3 border-t border-slate-100">
-        <button onclick="tutupModalAdmin()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl cursor-pointer">
+      <div class="mt-5 pt-4 border-t border-slate-100">
+        <button onclick="tutupModalAdmin()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl transition-all cursor-pointer">
           Batal
         </button>
       </div>
+
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC OPTIMIZED -->
   <script>
     let adminWaList = [];
     let allCandidates = [];
@@ -217,10 +279,10 @@
         const waNum = formatWaNumber(admin.noHp);
         const linkWa = admin.linkWa || `https://wa.me/${waNum}`;
         return `
-          <a href="${linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin bertanya tentang kandidat di Yayasan.')}" 
+          <a href="${linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin berkonsultasi mengenai kandidat di Yayasan Sentuhan Kasih.')}" 
              target="_blank" 
-             class="text-[11px] px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">
-            💬 ${admin.nama}
+             class="text-xs px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-2xs hover:shadow-sm transition-all flex items-center gap-1.5 border border-emerald-600/50">
+            💬 CS: ${admin.nama}
           </a>
         `;
       }).join('');
@@ -267,8 +329,9 @@
         filterData();
       } catch (e) {
         document.getElementById('kandidat-container').innerHTML = `
-          <div class="col-span-full text-center py-12 text-rose-500 font-medium text-sm">
-            Gagal terhubung ke server atau memuat data.
+          <div class="col-span-full text-center py-16 bg-white/60 backdrop-blur-md rounded-3xl border border-rose-100 shadow-xs">
+            <p class="text-rose-600 font-bold text-sm">Gagal memuat data kandidat.</p>
+            <p class="text-xs text-slate-400 mt-1">Pastikan Anda terhubung ke jaringan internet atau server berjalan dengan baik.</p>
           </div>`;
       }
     }
@@ -314,8 +377,10 @@
       const container = document.getElementById('kandidat-container');
       if (!candidates || candidates.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full text-center py-12 text-slate-400 font-medium text-sm">
-            Tidak ada kandidat yang cocok dengan kriteria pencarian.
+          <div class="col-span-full text-center py-16 bg-white/70 backdrop-blur-md rounded-3xl border border-amber-100 shadow-xs">
+            <div class="text-3xl mb-2">🔍</div>
+            <p class="text-slate-700 font-bold text-sm">Kandidat Tidak Ditemukan</p>
+            <p class="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci atau filter pencarian Anda.</p>
           </div>`;
         return;
       }
@@ -326,97 +391,109 @@
         // Kategori Badges
         let categoriesHtml = '';
         if (Array.isArray(item.kategori)) {
-          categoriesHtml = item.kategori.map(k => `<span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md text-[10px] font-bold">${k}</span>`).join(' ');
+          categoriesHtml = item.kategori.map(k => `<span class="bg-amber-50/80 text-amber-900 border border-amber-200/70 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${k}</span>`).join(' ');
         } else {
-          categoriesHtml = `<span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md text-[10px] font-bold">${item.kategori || '-'}</span>`;
+          categoriesHtml = `<span class="bg-amber-50/80 text-amber-900 border border-amber-200/70 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${item.kategori || '-'}</span>`;
         }
 
         // Gaji Rendering
         let gajiHtml = '';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
           gajiHtml = Object.entries(item.gaji).map(([k, v]) => `
-            <div class="flex items-baseline justify-between gap-2 text-xs border-b border-slate-50 pb-1 last:border-none">
-              <span class="text-slate-600 font-medium leading-tight flex-1">${k}:</span>
-              <span class="font-extrabold text-teal-700 whitespace-nowrap">Rp ${Number(v).toLocaleString('id-ID')}</span>
+            <div class="flex items-baseline justify-between gap-2 text-xs border-b border-slate-100 pb-1 last:border-none">
+              <span class="text-slate-500 font-medium">${k}:</span>
+              <span class="font-extrabold text-emerald-900">Rp ${Number(v).toLocaleString('id-ID')}</span>
             </div>
           `).join('');
         } else {
           gajiHtml = `
             <div class="flex items-center justify-between gap-2 text-xs">
-              <span class="text-slate-600 font-medium">Gaji:</span>
-              <span class="font-extrabold text-teal-700 whitespace-nowrap">Rp ${Number(item.gaji || 0).toLocaleString('id-ID')}</span>
+              <span class="text-slate-500 font-medium">Estimasi Gaji:</span>
+              <span class="font-extrabold text-emerald-900">Rp ${Number(item.gaji || 0).toLocaleString('id-ID')}</span>
             </div>`;
         }
 
         const cvUrl = item.fotoCv || item.foto || '';
         const rawKandidatHp = formatWaNumber(item.noHp || '');
-        const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih...`);
+        const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih bermaksud menghubungi Anda...`);
 
         return `
-          <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col hover:shadow-md transition-all">
+          <div class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl border border-amber-100/70 flex flex-col transition-all duration-300 hover:-translate-y-1">
             
             <!-- INFORMASI KANDIDAT -->
             <div>
-              <div class="relative mb-3">
-                <img src="${item.foto || '/placeholder.png'}" alt="${item.nama}" class="w-full h-48 object-cover rounded-xl border border-slate-100" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Kandidat'">
-                <span class="absolute top-2 right-2 px-2.5 py-1 text-[10px] font-extrabold rounded-lg shadow-sm ${isReady ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'}">
-                  ${isReady ? 'READY WORK' : 'TER-SALUR'}
+              <div class="relative mb-3.5 overflow-hidden rounded-2xl group">
+                <img src="${item.foto || '/placeholder.png'}" alt="${item.nama}" class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Kandidat'">
+                
+                <!-- Badge Status -->
+                <span class="absolute top-3 right-3 px-3 py-1 text-[10px] font-extrabold tracking-wider uppercase rounded-full shadow-md ${isReady ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-white'}">
+                  ${isReady ? '• Ready Work' : 'Ter-salur'}
                 </span>
-                <span class="absolute bottom-2 left-2 bg-slate-900/70 text-white px-2 py-0.5 rounded-md text-[10px] font-bold backdrop-blur-xs">
-                  #${item.id}
+
+                <!-- Badge ID -->
+                <span class="absolute bottom-3 left-3 bg-slate-950/75 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold backdrop-blur-md">
+                  ID: #${item.id}
                 </span>
               </div>
 
-              <h3 class="font-extrabold text-slate-800 text-base leading-snug mb-1">${item.nama}</h3>
+              <!-- Nama & Kategori -->
+              <h3 class="font-extrabold text-emerald-950 text-base leading-snug mb-1.5">${item.nama}</h3>
               <div class="flex flex-wrap gap-1 mb-3">
                 ${categoriesHtml}
               </div>
 
-              <div class="space-y-1 text-xs text-slate-600 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                <p><b>Umur:</b> ${item.umur || '-'} Tahun</p>
-                <p><b>Pengalaman:</b> ${item.pengalaman || '-'} Tahun</p>
-                <p><b>TB / BB:</b> ${item.tinggi || '-'} cm / ${item.berat || '-'} kg</p>
-                <p><b>Asal:</b> ${item.asal || '-'}</p>
-                <p><b>Keahlian:</b> ${item.keahlian || '-'}</p>
+              <!-- Detail Biodata Ringkas -->
+              <div class="space-y-1.5 text-xs text-slate-600 mb-4 bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
+                <div class="grid grid-cols-2 gap-1 border-b border-slate-200/60 pb-1.5">
+                  <p><b class="text-slate-800">Umur:</b> ${item.umur || '-'} Thn</p>
+                  <p><b class="text-slate-800">Exp:</b> ${item.pengalaman || '-'} Thn</p>
+                </div>
+                <p><b class="text-slate-800">TB / BB:</b> ${item.tinggi || '-'} cm / ${item.berat || '-'} kg</p>
+                <p><b class="text-slate-800">Asal:</b> ${item.asal || '-'}</p>
+                <p><b class="text-slate-800">Keahlian:</b> ${item.keahlian || '-'}</p>
                 
                 <!-- NOMOR HP KANDIDAT -->
                 ${isAdminLoggedIn ? `
-                  <p class="text-teal-800 font-bold bg-teal-100/70 p-1.5 rounded-lg mt-2 flex items-center justify-between">
-                    <span>📱 No HP:</span>
-                    <a href="https://wa.me/${rawKandidatHp}" target="_blank" class="underline hover:text-teal-950">${item.noHp || '-'}</a>
-                  </p>
+                  <div class="text-emerald-900 font-bold bg-emerald-50 border border-emerald-200/70 p-2 rounded-xl mt-2 flex items-center justify-between">
+                    <span class="text-[11px]">📱 No HP:</span>
+                    <a href="https://wa.me/${rawKandidatHp}" target="_blank" class="underline hover:text-emerald-950">${item.noHp || '-'}</a>
+                  </div>
                 ` : `
-                  <p class="text-slate-400 italic text-[11px] mt-1">
-                    📱 No HP: <i>(Login Admin untuk melihat)</i>
+                  <p class="text-slate-400 italic text-[11px] mt-1 pt-1 border-t border-slate-200/50">
+                    🔒 <i>Login Admin untuk akses Kontak Direct</i>
                   </p>
                 `}
               </div>
             </div>
 
-            <!-- BAGIAN BAWAH: GAJI & TOMBOL -->
-            <div class="mt-auto pt-2 border-t border-slate-100 space-y-3">
-              <div class="space-y-1">
+            <!-- BAGIAN BAWAH: GAJI & ACTION BUTTONS -->
+            <div class="mt-auto pt-3 border-t border-slate-100 space-y-3">
+              
+              <!-- Box Gaji -->
+              <div class="bg-amber-50/50 p-2.5 rounded-xl border border-amber-100 space-y-1">
                 ${gajiHtml}
               </div>
 
+              <!-- Action Buttons -->
               <div class="space-y-2">
                 ${cvUrl ? `
-                  <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                  <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-98">
                     📄 Lihat Dokumen CV
                   </button>
                 ` : ''}
 
                 <!-- TOMBOL WHATSAPP -->
                 ${isAdminLoggedIn && rawKandidatHp ? `
-                  <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                    💬 Chat Kandidat via WhatsApp
+                  <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-98">
+                    💬 Chat Direct Kandidat
                   </a>
                 ` : `
-                  <button onclick="bukaModalAdmin('${item.nama}', '${item.id}')" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer">
-                    💬 Hubungi Admin via WhatsApp
+                  <button onclick="bukaModalAdmin('${item.nama}', '${item.id}')" class="w-full py-2.5 bg-gradient-to-r from-emerald-800 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer border border-emerald-700/50">
+                    💬 Hubungi Admin via WA
                   </button>
                 `}
               </div>
+
             </div>
 
           </div>
@@ -442,20 +519,20 @@
       document.getElementById('modal-nama-kandidat').innerText = namaKandidat;
       const listContainer = document.getElementById('modal-admin-list');
       
-      const message = encodeURIComponent(`Halo, saya tertarik dengan kandidat:\n\n*Nama:* ${namaKandidat}\n*ID:* #${idKandidat}`);
+      const message = encodeURIComponent(`Halo Admin Yayasan Sentuhan Kasih, saya berminat untuk merekrut/konsultasi mengenai kandidat:\n\n*Nama:* ${namaKandidat}\n*ID:* #${idKandidat}`);
 
       if (adminWaList.length > 0) {
         listContainer.innerHTML = adminWaList.map(admin => {
           const waNum = formatWaNumber(admin.noHp);
           const linkWa = admin.linkWa || `https://wa.me/${waNum}`;
           return `
-            <a href="${linkWa}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+            <a href="${linkWa}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs">
               💬 Chat ${admin.nama}
             </a>
           `;
         }).join('');
       } else {
-        listContainer.innerHTML = `<p class="text-xs text-rose-500">Tidak ada nomor Admin yang tersedia.</p>`;
+        listContainer.innerHTML = `<p class="text-xs text-rose-500 font-medium">Layanan Admin belum tersedia saat ini.</p>`;
       }
 
       document.getElementById('modal-pilih-admin').classList.remove('hidden');
@@ -465,7 +542,7 @@
       document.getElementById('modal-pilih-admin').classList.add('hidden');
     }
 
-    // Event Keyboard ESC & Outside Click Event
+    // Event Listener Keyboard ESC & Outside Click Event
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         tutupModalCv();
@@ -481,6 +558,7 @@
       if (e.target.id === 'modal-pilih-admin') tutupModalAdmin();
     });
 
+    // Inisialisasi Data
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchAdminWa();
       await checkAuthStatus();
