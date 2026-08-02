@@ -124,6 +124,8 @@ function generateCategoryId(kategoriInput, candidates) {
     prefix = 'TK';
   } else if (katLower.includes('security')) {
     prefix = 'SC';
+  } else if (katLower.includes('chef')) {
+    prefix = 'CF';
   } else if (mainKategori) {
     prefix = mainKategori.split(' ').map(w => w[0]).join('').toUpperCase();
   }
