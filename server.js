@@ -24,23 +24,23 @@ const WA_ADMINS = [
   }
 ];
 
-// ------------------- DIREKTORI & INITIALIZATION (1 VOLUME STORAGE) -------------------
-const STORAGE_DIR = path.join(__dirname, 'storage');
+// ------------------- DIREKTORI & INITIALIZATION (RAILWAY VOLUME STORAGE) -------------------
+// Menggunakan jalur aman Railway Volume (/app/storage) atau folder lokal storage
+const STORAGE_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(__dirname, 'storage');
 const UPLOAD_DIR = path.join(STORAGE_DIR, 'uploads');
 const DATA_DIR = path.join(STORAGE_DIR, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
-// Pastikan direktori selalu dibuat jika belum ada
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
+// Pastikan direktori selalu dibuat secara otomatis jika belum ada
+[UPLOAD_DIR, DATA_DIR].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
+// Pastikan file candidates.json ada dan berisi array JSON yang valid
 if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+  fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), 'utf-8');
 }
 
 // ------------------- DUMMY SESSION SYSTEM (SUPPORT 2 ADMIN LOGIN) -------------------
@@ -79,15 +79,24 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 // ------------------- HELPER DATA JSON -------------------
 function getCandidates() {
   try {
+    if (!fs.existsSync(DATA_FILE)) {
+      return [];
+    }
     const data = fs.readFileSync(DATA_FILE, 'utf-8');
+    if (!data.trim()) return []; // Penanganan jika file kosong
     return JSON.parse(data);
   } catch (err) {
+    console.error(' Error membaca candidates.json:', err.message);
     return [];
   }
 }
 
 function saveCandidates(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.error(' Error menyimpan candidates.json:', err.message);
+  }
 }
 
 // ------------------- HELPER GENERATE ID PER KATEGORI -------------------
@@ -294,6 +303,7 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
 
     res.json({ success: true, message: 'Data kandidat berhasil ditambahkan!', data: newCandidate });
   } catch (err) {
+    console.error(' Error POST candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal menambahkan data.' });
   }
 });
@@ -367,6 +377,7 @@ app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
     saveCandidates(candidates);
     res.json({ success: true, message: 'Data kandidat berhasil diperbarui!' });
   } catch (err) {
+    console.error(' Error PUT candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal memperbarui data kandidat.' });
   }
 });
@@ -389,6 +400,7 @@ app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
 
     res.json({ success: true, message: 'Status berhasil diperbarui!' });
   } catch (err) {
+    console.error(' Error PATCH status:', err.message);
     res.status(500).json({ success: false, message: 'Gagal memperbarui status.' });
   }
 });
@@ -416,6 +428,7 @@ app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
 
     res.json({ success: true, message: 'Kandidat berhasil dihapus!' });
   } catch (err) {
+    console.error(' Error DELETE candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal menghapus kandidat.' });
   }
 });
@@ -424,5 +437,6 @@ app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
 app.listen(PORT, () => {
   console.log(`==================================================`);
   console.log(`🚀 Server Berjalan di Port ${PORT}!`);
+  console.log(`📂 Volume Storage Path: ${STORAGE_DIR}`);
   console.log(`==================================================`);
 });
