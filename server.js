@@ -6,9 +6,11 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ------------------- DIREKTORI & INITIALIZATION -------------------
-const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
-const DATA_DIR = path.join(__dirname, 'data');
+// ------------------- DIREKTORI & INITIALIZATION (1 VOLUME STORAGE) -------------------
+// Folder induk 'storage' akan di-mount ke Volume Railway (/app/storage)
+const STORAGE_DIR = path.join(__dirname, 'storage');
+const UPLOAD_DIR = path.join(STORAGE_DIR, 'uploads');
+const DATA_DIR = path.join(STORAGE_DIR, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
 // Pastikan direktori selalu dibuat jika belum ada
@@ -48,6 +50,9 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Menyajikan foto dari folder /storage/uploads agar tetap diakses via URL /uploads/...
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 // ------------------- HELPER DATA JSON -------------------
 function getCandidates() {
