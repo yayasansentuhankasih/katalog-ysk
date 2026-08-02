@@ -2,10 +2,23 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const session = require('express-session'); // ✅ DITAMBAHKAN
+const session = require('express-session');
+const cors = require('cors'); // 👈 ✅ 1. DITAMBAHKAN PACKAGE CORS
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Trust Proxy (Penting jika di-deploy di Railway / cloud server dengan HTTPS)
+app.set('trust proxy', 1); // 👈 ✅ 2. DITAMBAHKAN UNTUK HANDLING PROXY CLOUD
+
+// ------------------- MIDDLEWARE CORS & BODY PARSER -------------------
+app.use(cors({
+  origin: true, // Mengizinkan domain frontend mengakses API
+  credentials: true // Mengizinkan pengiriman Cookie Session
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // =================================================================
 // 📱 KONFIGURASI 2 NOMOR WA ADMIN
@@ -47,13 +60,11 @@ const ADMIN_ACCOUNT = {
   password: process.env.ADMIN_PASS || 'yayasan1996'
 };
 
-// ------------------- MIDDLEWARE EXPRESS -------------------
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ------------------- STATIC FILES -------------------
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOAD_DIR));
 
-// ------------------- CONFIG EXPRESS SESSION (DIPERBAIKI) -------------------
+// ------------------- CONFIG EXPRESS SESSION -------------------
 app.use(session({
   secret: process.env.SESSION_SECRET || 'sentuhan_kasih_secret_key_123',
   resave: false,
@@ -61,7 +72,8 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // Sesi bertahan 24 Jam
     httpOnly: true,
-    sameSite: 'lax' // Memastikan cookie aman saat berpindah halaman/membuka WA
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production' // Otomatis aktifkan secure jika di production
   }
 }));
 
@@ -222,7 +234,6 @@ app.get('/dashboard', authAdminMiddleware, (req, res) => {
 // 🔐 2. API AUTHENTICATION & KONTAK ADMIN
 // =================================================================
 
-// Endpoint untuk cek status login admin dari frontend (index.html)
 app.get('/api/check-auth', (req, res) => {
   if (req.session && req.session.isAdmin) {
     return res.json({ success: true, isAdmin: true });
@@ -234,25 +245,23 @@ app.get('/api/admin-wa', (req, res) => {
   res.json({ success: true, data: WA_ADMINS });
 });
 
-// ENDPOINT LOGIN BERBASIS SESSION
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
   if (username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password) {
-    req.session.isAdmin = true; // ✅ Merekam status login di Cookie Session
+    req.session.isAdmin = true;
     return res.json({ success: true, message: 'Login berhasil!' });
   }
 
   return res.status(401).json({ success: false, message: 'Username atau password salah!' });
 });
 
-// ENDPOINT LOGOUT
 app.post('/api/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Gagal logout.' });
     }
-    res.clearCookie('connect.sid'); // Hapus cookie sesi
+    res.clearCookie('connect.sid');
     res.json({ success: true, message: 'Berhasil Logout' });
   });
 });
