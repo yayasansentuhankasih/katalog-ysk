@@ -8,7 +8,10 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display untuk sentuhan elegan & mewah -->
+  <!-- FontAwesome Icons (Agar Logo Selalu Muncul Bagus & Mewah) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +24,7 @@
       font-family: 'Playfair Display', serif;
     }
 
-    /* BACKGROUND ELEGAN & MEWAH (Warm Cream / Pearl Luxe Tone) */
+    /* BACKGROUND ELEGAN & MEWAH (Warm Pearl / Warm Cream) */
     .bg-katalog-theme {
       background-color: #FAF8F5;
       background-image: 
@@ -34,8 +37,8 @@
 
     /* POLA DEKORATIF ORNAMEN MEWAH */
     .bg-pattern {
-      background-image: radial-gradient(#d4af37 0.5px, transparent 0.5px);
-      background-size: 32px 32px;
+      background-image: radial-gradient(#d4af37 0.55px, transparent 0.55px);
+      background-size: 30px 30px;
       opacity: 0.12;
     }
 
@@ -69,18 +72,23 @@
     <!-- HEADER MEWAH -->
     <header class="pt-8 pb-6 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6">
       
-      <!-- Logo & Brand Yayasan -->
-      <div class="flex items-center gap-3.5 bg-white/80 backdrop-blur-md p-2.5 pr-5 rounded-2xl border border-amber-200/60 shadow-xs">
-        <img src="/logo.png" alt="Logo Yayasan" class="w-12 h-12 object-contain rounded-xl bg-gradient-to-br from-emerald-800 to-teal-950 p-1.5 shadow-sm" onerror="this.style.display='none'">
+      <!-- LOGO & BRAND YAYASAN (Gunakan Icon FontAwesome Emas & Emerald yang Elegan) -->
+      <div class="flex items-center gap-3.5 bg-white/90 backdrop-blur-md p-2 pl-2.5 pr-5 rounded-2xl border border-amber-200/80 shadow-sm">
+        
+        <!-- ICON LOGO ELEGAN -->
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-800 to-teal-950 flex items-center justify-center text-amber-400 text-xl shadow-inner border border-amber-300/40 shrink-0">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+        </div>
+
         <div>
-          <h2 class="text-xs font-bold uppercase tracking-widest text-amber-700">Yayasan</h2>
-          <h2 class="text-base font-extrabold text-emerald-950 tracking-tight leading-none">Sentuhan Kasih</h2>
+          <h2 class="text-[10px] font-extrabold uppercase tracking-widest text-amber-700 leading-tight">Yayasan</h2>
+          <h2 class="text-base font-extrabold text-emerald-950 tracking-tight leading-none mt-0.5">Sentuhan Kasih</h2>
         </div>
       </div>
 
       <!-- Judul Utama Halaman -->
       <div class="text-center">
-        <span class="inline-block px-3 py-1 bg-amber-100/80 text-amber-900 border border-amber-200/60 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-1.5 shadow-2xs">
+        <span class="inline-block px-3.5 py-1 bg-amber-100/90 text-amber-900 border border-amber-200/80 rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-1.5 shadow-2xs">
           ✨ Portal Resmi Penyaluran
         </span>
         <h1 class="font-serif-title text-3xl sm:text-4xl font-bold text-emerald-950 tracking-tight">
@@ -97,14 +105,14 @@
         <a id="btn-dashboard" 
            href="/admin" 
            class="hidden text-xs px-4 py-2.5 bg-gradient-to-r from-emerald-800 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border border-emerald-700/50">
-          ⚙️ Dashboard
+          <i class="fa-solid fa-sliders"></i> Dashboard
         </a>
 
         <button 
           id="btn-auth" 
           onclick="handleAuthClick()" 
           class="text-xs px-4 py-2.5 bg-white/90 hover:bg-white text-emerald-950 font-bold rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer">
-          🔒 Login Admin
+          <i class="fa-solid fa-lock"></i> Login Admin
         </button>
       </div>
     </header>
@@ -113,12 +121,14 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 w-full flex-grow">
       
       <!-- FILTER BAR ELEGANT -->
-      <div class="bg-white/85 backdrop-blur-lg p-4 sm:p-5 rounded-3xl border border-amber-100 shadow-md mb-8">
+      <div class="bg-white/90 backdrop-blur-lg p-4 sm:p-5 rounded-3xl border border-amber-100/90 shadow-md mb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-center">
           
           <!-- Input Search -->
           <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">🔍</span>
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-amber-600/70">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
             <input type="text" id="filter-search" oninput="filterData()" 
                    placeholder="Cari Nama, ID, Keahlian..." 
                    class="w-full text-xs pl-9 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none bg-slate-50/50 text-slate-800 placeholder-slate-400 font-medium transition-all">
@@ -149,8 +159,8 @@
 
           <!-- Tombol Reset Filter -->
           <div>
-            <button onclick="resetFilter()" class="w-full text-xs py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200/80 active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer">
-              🔄 Reset Filter
+            <button onclick="resetFilter()" class="w-full text-xs py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200/80 active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-rotate-left text-xs"></i> Reset Filter
             </button>
           </div>
 
@@ -182,9 +192,9 @@
     <footer class="bg-white/80 backdrop-blur-md border-t border-amber-100/80 py-6 text-center text-xs text-slate-500 mt-12">
       <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <span class="font-bold text-emerald-900">Yayasan Sentuhan Kasih</span>
+          <span class="font-bold text-emerald-950">Yayasan Sentuhan Kasih</span>
           <span class="text-slate-300">•</span>
-          <span>Penyaluran Resmi & Profesional</span>
+          <span>Penyaluran Resmi & Terpercaya</span>
         </div>
         <p>© 2026 Yayasan Sentuhan Kasih. Hak Cipta Dilindungi.</p>
       </div>
@@ -218,7 +228,7 @@
     <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 border border-amber-100 text-center transform transition-all">
       
       <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center mx-auto mb-3 text-xl shadow-2xs">
-        💬
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
       </div>
 
       <h3 class="text-base font-extrabold text-emerald-950 mb-1">Hubungi Admin Konsultasi</h3>
@@ -281,8 +291,8 @@
         return `
           <a href="${linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin berkonsultasi mengenai kandidat di Yayasan Sentuhan Kasih.')}" 
              target="_blank" 
-             class="text-xs px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-2xs hover:shadow-sm transition-all flex items-center gap-1.5 border border-emerald-600/50">
-            💬 CS: ${admin.nama}
+             class="text-xs px-3.5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-2xs hover:shadow-sm transition-all flex items-center gap-1.5 border border-emerald-600/50">
+            <i class="fa-brands fa-whatsapp text-sm"></i> CS: ${admin.nama}
           </a>
         `;
       }).join('');
@@ -300,10 +310,10 @@
 
         if (isAdminLoggedIn) {
           btnDashboard.classList.remove('hidden');
-          btnAuth.innerHTML = '🔓 Logout Admin';
+          btnAuth.innerHTML = '<i class="fa-solid fa-unlock"></i> Logout Admin';
         } else {
           btnDashboard.classList.add('hidden');
-          btnAuth.innerHTML = '🔒 Login Admin';
+          btnAuth.innerHTML = '<i class="fa-solid fa-lock"></i> Login Admin';
         }
       } catch (e) {
         console.error("Gagal memeriksa status auth.");
@@ -378,7 +388,7 @@
       if (!candidates || candidates.length === 0) {
         container.innerHTML = `
           <div class="col-span-full text-center py-16 bg-white/70 backdrop-blur-md rounded-3xl border border-amber-100 shadow-xs">
-            <div class="text-3xl mb-2">🔍</div>
+            <div class="text-3xl mb-2 text-amber-600"><i class="fa-solid fa-user-slash"></i></div>
             <p class="text-slate-700 font-bold text-sm">Kandidat Tidak Ditemukan</p>
             <p class="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci atau filter pencarian Anda.</p>
           </div>`;
@@ -455,7 +465,7 @@
                 <!-- NOMOR HP KANDIDAT -->
                 ${isAdminLoggedIn ? `
                   <div class="text-emerald-900 font-bold bg-emerald-50 border border-emerald-200/70 p-2 rounded-xl mt-2 flex items-center justify-between">
-                    <span class="text-[11px]">📱 No HP:</span>
+                    <span class="text-[11px]"><i class="fa-solid fa-phone text-emerald-700"></i> No HP:</span>
                     <a href="https://wa.me/${rawKandidatHp}" target="_blank" class="underline hover:text-emerald-950">${item.noHp || '-'}</a>
                   </div>
                 ` : `
@@ -478,18 +488,18 @@
               <div class="space-y-2">
                 ${cvUrl ? `
                   <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-98">
-                    📄 Lihat Dokumen CV
+                    <i class="fa-regular fa-file-pdf text-amber-700"></i> Lihat Dokumen CV
                   </button>
                 ` : ''}
 
                 <!-- TOMBOL WHATSAPP -->
                 ${isAdminLoggedIn && rawKandidatHp ? `
-                  <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-98">
-                    💬 Chat Direct Kandidat
+                  <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Chat Direct Kandidat
                   </a>
                 ` : `
                   <button onclick="bukaModalAdmin('${item.nama}', '${item.id}')" class="w-full py-2.5 bg-gradient-to-r from-emerald-800 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer border border-emerald-700/50">
-                    💬 Hubungi Admin via WA
+                    <i class="fa-brands fa-whatsapp text-sm text-emerald-300"></i> Hubungi Admin via WA
                   </button>
                 `}
               </div>
@@ -527,7 +537,7 @@
           const linkWa = admin.linkWa || `https://wa.me/${waNum}`;
           return `
             <a href="${linkWa}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-xs">
-              💬 Chat ${admin.nama}
+              <i class="fa-brands fa-whatsapp text-sm"></i> Chat ${admin.nama}
             </a>
           `;
         }).join('');
