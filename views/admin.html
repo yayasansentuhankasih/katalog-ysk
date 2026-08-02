@@ -24,202 +24,222 @@
       background-size: 20px 20px;
       opacity: 0.12;
     }
+    /* Custom Scrollbar Modal */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
   </style>
 </head>
-<body class="bg-admin-theme text-slate-800 antialiased min-h-screen p-4 sm:p-6 lg:p-8 relative">
+<body class="bg-admin-theme text-slate-800 antialiased min-h-screen p-3 sm:p-6 lg:p-8 relative">
 
-  <!-- Pattern Overlay -->
+  <!-- Pattern Overlay Background -->
   <div class="fixed inset-0 bg-pattern pointer-events-none z-0"></div>
 
   <!-- MAIN CONTAINER -->
   <div class="max-w-7xl mx-auto space-y-6 relative z-10">
     
     <!-- HEADER -->
-    <header class="flex flex-col md:flex-row justify-between items-center bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-teal-100/80 gap-4">
+    <header class="flex flex-col md:flex-row justify-between items-center bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-teal-100/80 gap-4">
       <div class="flex items-center gap-3.5">
-        <img src="/logo.png" alt="Logo Yayasan" class="w-11 h-11 object-contain rounded-xl shadow-sm bg-white p-1 border border-teal-100" onerror="this.style.display='none'">
+        <div class="p-2 bg-teal-50 border border-teal-100 rounded-xl shadow-xs">
+          <img src="/logo.png" alt="Logo Yayasan" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/40?text=YSK'">
+        </div>
         <div>
-          <h1 class="text-xl font-extrabold text-teal-950 tracking-tight">Dashboard Panel Admin</h1>
+          <h1 class="text-xl font-extrabold text-teal-950 tracking-tight flex items-center gap-2">
+            Dashboard Panel Admin
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">Online</span>
+          </h1>
           <p class="text-xs font-medium text-slate-500">Kelola Data & Dokumen Kandidat - Yayasan Sentuhan Kasih</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
-        <a href="/" class="text-xs bg-white hover:bg-slate-50 text-slate-700 hover:text-teal-800 px-4 py-2.5 rounded-xl border border-slate-200 font-bold shadow-sm transition-all flex items-center gap-2">
+        <a href="/" class="text-xs bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-800 px-4 py-2.5 rounded-xl border border-slate-200 font-bold shadow-xs transition-all flex items-center gap-2">
           🌐 Lihat Katalog Utama
         </a>
-        <button onclick="logoutAdmin()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2.5 rounded-xl border border-rose-200 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+        <button onclick="logoutAdmin()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-4 py-2.5 rounded-xl border border-rose-200/80 shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
           🔓 Logout Admin
         </button>
       </div>
     </header>
 
     <!-- MAIN GRID LAYOUT -->
-    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       
       <!-- FORM INPUT KANDIDAT BARU -->
-      <section class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-teal-100/80 lg:col-span-1 flex flex-col justify-between">
-        <div>
-          <h2 class="text-sm font-extrabold text-teal-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2 uppercase tracking-wider">
-            <span>➕</span> Tambah Kandidat Baru
-          </h2>
-          
-          <form id="form-kandidat" onsubmit="simpanData(event)" class="space-y-3.5 text-xs">
+      <section class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-teal-100/80 lg:col-span-1">
+        <h2 class="text-xs font-extrabold text-teal-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2 uppercase tracking-wider">
+          <span>➕</span> Tambah Kandidat Baru
+        </h2>
+        
+        <form id="form-kandidat" onsubmit="simpanData(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
+            <input type="text" id="input-nama" required placeholder="Masukkan nama lengkap..." class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
+          </div>
+
+          <!-- CHECKBOX KATEGORI GANDA -->
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan (Pilih 1 atau Lebih)</label>
+            <div class="space-y-2 p-3 bg-slate-50/80 rounded-xl border border-slate-200/80" id="container-kategori-add">
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Asisten Rumah Tangga (ART)</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Baby Sitter / Pengasuh</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Perawat Lansia / Caregiver</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Driver" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Driver</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Tukang Kebun</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Security" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Security</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- CONTAINER INPUT GAJI DINAMIS -->
+          <div id="container-gaji-add" class="space-y-2">
+            <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
+            <p class="text-slate-400 italic bg-slate-50 p-2.5 rounded-xl text-center border border-dashed border-slate-200">Pilih kategori pekerjaan di atas...</p>
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Nomor HP / WA Kandidat</label>
+            <input type="text" id="input-nohp" required placeholder="Contoh: 081234567890" class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
             <div>
-              <label class="font-bold text-slate-700 block mb-1">Nama Lengkap</label>
-              <input type="text" id="input-nama" required placeholder="Masukkan nama lengkap..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
+              <label class="font-bold text-slate-700 block mb-1">Umur (Tahun)</label>
+              <input type="number" id="input-umur" placeholder="25" required class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
             </div>
-
-            <!-- CHECKBOX KATEGORI GANDA -->
             <div>
-              <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan (Pilih 1 atau Lebih)</label>
-              <div class="space-y-1.5 p-3 bg-slate-50 rounded-xl border border-slate-200" id="container-kategori-add">
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Asisten Rumah Tangga (ART)</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Baby Sitter / Pengasuh</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Perawat Lansia / Caregiver</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Driver" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Driver</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Tukang Kebun</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                  <input type="checkbox" name="input-kategori-opt" value="Security" onchange="renderDynamicGajiAdd()" class="rounded text-teal-600 focus:ring-teal-500">
-                  <span>Security</span>
-                </label>
-              </div>
+              <label class="font-bold text-slate-700 block mb-1">Pengalaman (Thn)</label>
+              <input type="number" id="input-pengalaman" placeholder="2" required class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
             </div>
+          </div>
 
-            <!-- CONTAINER INPUT GAJI DINAMIS -->
-            <div id="container-gaji-add" class="space-y-2">
-              <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
-              <p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>
-            </div>
-
+          <div class="grid grid-cols-2 gap-2.5">
             <div>
-              <label class="font-bold text-slate-700 block mb-1">Nomor HP / WA Kandidat</label>
-              <input type="text" id="input-nohp" required placeholder="Contoh: 081234567890" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
+              <label class="font-bold text-slate-700 block mb-1">Tinggi (cm)</label>
+              <input type="number" id="input-tinggi" placeholder="160" class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
             </div>
-
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">Umur (Tahun)</label>
-                <input type="number" id="input-umur" placeholder="25" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-              </div>
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">Pengalaman (Thn)</label>
-                <input type="number" id="input-pengalaman" placeholder="2" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-              </div>
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Berat (kg)</label>
+              <input type="number" id="input-berat" placeholder="55" class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
             </div>
+          </div>
 
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">Tinggi (cm)</label>
-                <input type="number" id="input-tinggi" placeholder="160" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-              </div>
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">Berat (kg)</label>
-                <input type="number" id="input-berat" placeholder="55" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-              </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
+            <input type="text" id="input-asal" placeholder="Contoh: Lampung" required class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Keahlian Ringkas</label>
+            <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all text-slate-800 bg-slate-50/50 focus:bg-white">
+          </div>
+
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
+            <select id="input-status" class="w-full p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none bg-slate-50/50 focus:bg-white transition-all text-slate-800 font-semibold">
+              <option value="READY WORK">🟢 READY WORK</option>
+              <option value="TER-SALUR">🔴 TER-SALUR</option>
+            </select>
+          </div>
+
+          <div class="p-3 bg-teal-50/60 rounded-xl border border-teal-100 space-y-3 mt-2">
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">🖼️ Upload Foto Profil</label>
+              <input type="file" id="input-foto" accept="image/*" required class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-teal-100 file:text-teal-800 hover:file:bg-teal-200 cursor-pointer transition-all">
             </div>
 
             <div>
-              <label class="font-bold text-slate-700 block mb-1">Kota Asal</label>
-              <input type="text" id="input-asal" placeholder="Contoh: Lampung" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
+              <label class="font-bold text-slate-700 block mb-1">📄 Upload Dokumen CV</label>
+              <input type="file" id="input-cv" accept="image/*" class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-teal-100 file:text-teal-800 hover:file:bg-teal-200 cursor-pointer transition-all">
             </div>
+          </div>
 
-            <div>
-              <label class="font-bold text-slate-700 block mb-1">Keahlian Ringkas</label>
-              <input type="text" id="input-keahlian" placeholder="Contoh: Masak, Bebersih, Rawat Lansia" required class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all text-slate-800">
-            </div>
-
-            <div>
-              <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
-              <select id="input-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white transition-all text-slate-800">
-                <option value="READY WORK">READY WORK</option>
-                <option value="TER-SALUR">TER-SALUR</option>
-              </select>
-            </div>
-
-            <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-2.5 mt-2">
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">🖼️ Upload Foto Profil</label>
-                <input type="file" id="input-foto" accept="image/*" required class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-teal-100 file:text-teal-800 hover:file:bg-teal-200 cursor-pointer">
-              </div>
-
-              <div>
-                <label class="font-bold text-slate-700 block mb-1">📄 Upload Dokumen CV</label>
-                <input type="file" id="input-cv" accept="image/*" class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-teal-100 file:text-teal-800 hover:file:bg-teal-200 cursor-pointer">
-              </div>
-            </div>
-
-            <button type="submit" id="btn-submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-[0.99] text-white font-extrabold rounded-xl transition-all shadow-md shadow-orange-500/20 text-xs mt-3 flex items-center justify-center gap-2 cursor-pointer">
-              💾 Simpan Data & Upload File
-            </button>
-          </form>
-        </div>
+          <button type="submit" id="btn-submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-extrabold rounded-xl transition-all shadow-md shadow-orange-500/20 text-xs mt-3 flex items-center justify-center gap-2 cursor-pointer">
+            💾 Simpan Data & Upload File
+          </button>
+        </form>
       </section>
 
       <!-- TABEL DAFTAR KANDIDAT -->
-      <section class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-teal-100/80 lg:col-span-2 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-            <h2 class="text-sm font-extrabold text-teal-900 flex items-center gap-2 uppercase tracking-wider">
-              <span>📋</span> Daftar Kandidat Terdaftar
-            </h2>
-            <button onclick="loadDataAdmin()" class="text-xs bg-slate-50 hover:bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-              🔄 Refresh Data
-            </button>
-          </div>
-          
-          <div class="overflow-x-auto rounded-xl border border-slate-100">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider">
-                  <th class="p-3.5">ID</th>
-                  <th class="p-3.5">Nama</th>
-                  <th class="p-3.5">Kategori & Gaji</th>
-                  <th class="p-3.5">No. HP</th>
-                  <th class="p-3.5">Status</th>
-                  <th class="p-3.5 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="tabel-body" class="divide-y divide-slate-100">
-                <tr>
-                  <td colspan="6" class="p-8 text-center text-slate-400 font-medium">Memuat data kandidat...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <section class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-teal-100/80 lg:col-span-2">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+          <h2 class="text-xs font-extrabold text-teal-900 flex items-center gap-2 uppercase tracking-wider">
+            <span>📋</span> Daftar Kandidat Terdaftar
+          </h2>
+          <button onclick="loadDataAdmin()" class="text-xs bg-slate-50 hover:bg-teal-50 text-slate-600 hover:text-teal-800 px-3 py-1.5 rounded-xl border border-slate-200 font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            🔄 Refresh Data
+          </button>
+        </div>
+        
+        <!-- Table Wrapper -->
+        <div class="overflow-x-auto rounded-xl border border-slate-200/80 shadow-2xs">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                <th class="p-3.5 w-20">ID</th>
+                <th class="p-3.5 w-48">Nama Kandidat</th>
+                <th class="p-3.5">Kategori & Gaji</th>
+                <th class="p-3.5 w-36">No. HP</th>
+                <th class="p-3.5 w-32 text-center">Status</th>
+                <th class="p-3.5 w-28 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-body" class="divide-y divide-slate-100 bg-white">
+              <tr>
+                <td colspan="6" class="p-8 text-center text-slate-400 font-medium">
+                  <div class="flex flex-col items-center gap-2">
+                    <span class="animate-spin text-lg">🌀</span>
+                    <span>Memuat data kandidat...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-white/80 border-t border-slate-200 py-4 text-center text-xs text-slate-500 rounded-xl">
+    <footer class="bg-white/80 border border-slate-200/60 py-4 text-center text-xs text-slate-500 rounded-xl shadow-2xs">
       <p>© 2026 Yayasan Sentuhan Kasih. Panel Manajemen Admin.</p>
     </footer>
 
   </div>
 
   <!-- 📌 MODAL POPUP EDIT KANDIDAT -->
-  <div id="modal-edit" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto border border-teal-100">
+  <div id="modal-edit" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-all">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto border border-teal-100 animate-in fade-in zoom-in duration-200">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-        <h3 class="text-base font-extrabold text-teal-950">✏️ Edit Data Kandidat (<span id="edit-id-display" class="text-teal-600"></span>)</h3>
-        <button onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
+        <h3 class="text-sm font-extrabold text-teal-950 flex items-center gap-2">
+          ✏️ Edit Data Kandidat (<span id="edit-id-display" class="text-teal-600 font-mono"></span>)
+        </h3>
+        <button onclick="tutupModalEdit()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 text-lg font-bold transition-all cursor-pointer">✕</button>
       </div>
 
       <form id="form-edit-kandidat" onsubmit="submitEditData(event)" class="space-y-3.5 text-xs">
@@ -232,38 +252,38 @@
 
         <div>
           <label class="font-bold text-slate-700 block mb-1">Status Ketersediaan</label>
-          <select id="edit-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white">
-            <option value="READY WORK">READY WORK</option>
-            <option value="TER-SALUR">TER-SALUR</option>
+          <select id="edit-status" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none bg-white font-semibold">
+            <option value="READY WORK">🟢 READY WORK</option>
+            <option value="TER-SALUR">🔴 TER-SALUR</option>
           </select>
         </div>
 
         <!-- EDIT CHECKBOX KATEGORI -->
         <div>
           <label class="font-bold text-slate-700 block mb-1">Kategori Pekerjaan (Pilih 1 atau Lebih)</label>
-          <div class="space-y-1.5 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+          <div class="space-y-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Asisten Rumah Tangga (ART)</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Baby Sitter / Pengasuh</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Perawat Lansia / Caregiver" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Perawat Lansia / Caregiver</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Driver" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Driver" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Driver</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Tukang Kebun" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Tukang Kebun</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-              <input type="checkbox" name="edit-kategori-opt" value="Security" onchange="renderDynamicGajiEdit()" class="rounded text-teal-600 focus:ring-teal-500">
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Security" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Security</span>
             </label>
           </div>
@@ -324,68 +344,81 @@
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl cursor-pointer">Batal</button>
-          <button type="submit" id="btn-submit-edit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl cursor-pointer">💾 Simpan Perubahan</button>
+          <button type="button" onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl cursor-pointer transition-all">Batal</button>
+          <button type="submit" id="btn-submit-edit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl cursor-pointer transition-all shadow-sm">💾 Simpan Perubahan</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGICAL CONTROLLER -->
   <script>
     let globalCandidatesData = [];
 
-    // Helper render input gaji dinamis Form Tambah
+    // -------------------------------------------------------------
+    // 1. RENDER GAJI DINAMIS (FORM TAMBAH)
+    // -------------------------------------------------------------
     function renderDynamicGajiAdd() {
       const container = document.getElementById('container-gaji-add');
       const selected = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
-      
+
       if (selected.length === 0) {
-        container.innerHTML = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label><p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>`;
+        container.innerHTML = `
+          <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
+          <p class="text-slate-400 italic bg-slate-50 p-2.5 rounded-xl text-center border border-dashed border-slate-200">Pilih kategori pekerjaan di atas...</p>
+        `;
         return;
       }
 
-      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji Per Kategori (Rp)</label>`;
+      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji per Kategori (Rp)</label>`;
       selected.forEach(kat => {
         html += `
-          <div class="mb-2">
-            <span class="text-[11px] font-semibold text-teal-800">${kat}:</span>
-            <input type="number" required placeholder="Contoh: 2500000" data-kategori="${kat}" class="input-gaji-item-add w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-teal-500 text-slate-800">
+          <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200/80">
+            <span class="text-[11px] font-bold text-teal-900 w-1/2 truncate" title="${kat}">${kat}</span>
+            <input type="number" data-kategori="${kat}" placeholder="Contoh: 3000000" class="input-gaji-item-add w-1/2 p-1.5 border border-slate-200 rounded-lg text-slate-800 outline-none focus:ring-1 focus:ring-teal-500 bg-white" required>
           </div>
         `;
       });
       container.innerHTML = html;
     }
 
-    // Helper render input gaji dinamis Form Edit
-    function renderDynamicGajiEdit(existingGajiObj = {}) {
+    // -------------------------------------------------------------
+    // 2. RENDER GAJI DINAMIS (FORM EDIT)
+    // -------------------------------------------------------------
+    function renderDynamicGajiEdit(existingGaji = {}) {
       const container = document.getElementById('container-gaji-edit');
       const selected = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
-      
+
       if (selected.length === 0) {
-        container.innerHTML = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label><p class="text-slate-400 italic">Pilih kategori terlebih dahulu...</p>`;
+        container.innerHTML = `
+          <label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji (Rp)</label>
+          <p class="text-slate-400 italic bg-slate-50 p-2.5 rounded-xl text-center border border-dashed border-slate-200">Pilih kategori pekerjaan di atas...</p>
+        `;
         return;
       }
 
-      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji Per Kategori (Rp)</label>`;
+      let html = `<label class="font-bold text-slate-700 block mb-1">Ekspektasi Gaji per Kategori (Rp)</label>`;
       selected.forEach(kat => {
         let val = '';
-        if (existingGajiObj && typeof existingGajiObj === 'object') {
-          val = existingGajiObj[kat] || '';
-        } else if (typeof existingGajiObj === 'number' || typeof existingGajiObj === 'string') {
-          val = existingGajiObj;
+        if (typeof existingGaji === 'object' && existingGaji !== null) {
+          val = existingGaji[kat] || '';
+        } else if (typeof existingGaji === 'number' || typeof existingGaji === 'string') {
+          val = existingGaji;
         }
 
         html += `
-          <div class="mb-2">
-            <span class="text-[11px] font-semibold text-teal-800">${kat}:</span>
-            <input type="number" required value="${val}" placeholder="Contoh: 2500000" data-kategori="${kat}" class="input-gaji-item-edit w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-teal-500 text-slate-800">
+          <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+            <span class="text-[11px] font-bold text-teal-900 w-1/2 truncate" title="${kat}">${kat}</span>
+            <input type="number" data-kategori="${kat}" value="${val}" placeholder="3000000" class="input-gaji-item-edit w-1/2 p-1.5 border border-slate-200 rounded-lg text-slate-800 outline-none focus:ring-1 focus:ring-teal-500 bg-white" required>
           </div>
         `;
       });
       container.innerHTML = html;
     }
 
+    // -------------------------------------------------------------
+    // 3. FETCH & LOAD DATA CANDIDATES
+    // -------------------------------------------------------------
     async function loadDataAdmin() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());
@@ -401,6 +434,9 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 4. RENDER TABEL KANDIDAT
+    // -------------------------------------------------------------
     function renderTabel(data) {
       const tbody = document.getElementById('tabel-body');
       if (!data || data.length === 0) {
@@ -413,7 +449,7 @@
         const isReady = (item.status || '').toUpperCase().includes('READY');
         const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
 
-        // Format Tampilan Kategori & Gaji
+        // Format Tampilan Kategori
         let kategoriText = '-';
         if (Array.isArray(item.kategori)) {
           kategoriText = item.kategori.join(', ');
@@ -421,42 +457,57 @@
           kategoriText = item.kategori;
         }
 
+        // Format Tampilan Gaji
         let gajiText = '-';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
-          gajiText = Object.entries(item.gaji).map(([k, v]) => `<div class="text-[11px]"><b>${k}:</b> Rp ${Number(v).toLocaleString('id-ID')}</div>`).join('');
+          gajiText = Object.entries(item.gaji).map(([k, v]) => `
+            <div class="text-[11px] leading-tight">
+              <span class="text-slate-500">${k}:</span> 
+              <span class="font-bold text-slate-800">Rp ${Number(v).toLocaleString('id-ID')}</span>
+            </div>
+          `).join('');
         } else if (item.gaji) {
           gajiText = `Rp ${Number(item.gaji).toLocaleString('id-ID')}`;
         }
         
         html += `
-          <tr class="hover:bg-teal-50/40 transition-colors">
-            <td class="p-3.5 font-bold text-slate-700">#${item.id}</td>
-            <td class="p-3.5 font-bold text-slate-900">${item.nama}</td>
-            <td class="p-3.5 text-slate-600 font-medium">
-              <div class="font-bold text-teal-900">${kategoriText}</div>
-              <div class="mt-0.5 text-slate-500">${gajiText}</div>
-            </td>
-            <td class="p-3.5 font-bold text-teal-800">📱 ${item.noHp || '-'}</td>
+          <tr class="hover:bg-teal-50/40 transition-colors align-middle">
+            <td class="p-3.5 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
             <td class="p-3.5">
+              <div class="font-bold text-slate-900 leading-snug">${item.nama || '-'}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
+            </td>
+            <td class="p-3.5">
+              <div class="font-bold text-teal-900 text-[11px]">${kategoriText}</div>
+              <div class="mt-1 space-y-0.5">${gajiText}</div>
+            </td>
+            <td class="p-3.5 whitespace-nowrap">
+              <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}" target="_blank" class="inline-flex items-center gap-1 font-bold text-teal-800 hover:text-teal-600 hover:underline">
+                <span>📱</span> ${item.noHp || '-'}
+              </a>
+            </td>
+            <td class="p-3.5 text-center whitespace-nowrap">
               <button onclick="gantiStatus('${item.id}', '${statusText}')" 
-                      title="Klik untuk mengubah status"
-                      class="px-2.5 py-1 text-[10px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm active:scale-95 ${
+                      title="Klik untuk mengubah status ketersediaan"
+                      class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold rounded-lg transition-all cursor-pointer shadow-2xs active:scale-95 ${
                         isReady 
                           ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' 
                           : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300'
                       }">
                 <span>${isReady ? '🟢' : '🔴'}</span>
                 <span>${statusText}</span>
-                <span class="text-[8px] opacity-60">🔄</span>
+                <span class="text-[8px] opacity-60 ml-0.5">🔄</span>
               </button>
             </td>
-            <td class="p-3.5 text-center flex items-center justify-center gap-1.5">
-              <button onclick="bukaModalEdit('${item.id}')" class="px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-[11px]">
-                ✏️ Edit
-              </button>
-              <button onclick="hapusKandidat('${item.id}')" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-colors cursor-pointer text-[11px]">
-                🗑️ Hapus
-              </button>
+            <td class="p-3.5 text-center whitespace-nowrap">
+              <div class="inline-flex items-center justify-center gap-1.5">
+                <button onclick="bukaModalEdit('${item.id}')" class="px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-[11px] shadow-2xs">
+                  ✏️ Edit
+                </button>
+                <button onclick="hapusKandidat('${item.id}')" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-colors cursor-pointer text-[11px] shadow-2xs">
+                  🗑️ Hapus
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -464,9 +515,11 @@
       tbody.innerHTML = html;
     }
 
-    // Modal Edit Handler
+    // -------------------------------------------------------------
+    // 5. MODAL EDIT HANDLER
+    // -------------------------------------------------------------
     function bukaModalEdit(id) {
-      const item = globalCandidatesData.find(c => c.id === id);
+      const item = globalCandidatesData.find(c => String(c.id) === String(id));
       if (!item) return alert('Data tidak ditemukan');
 
       document.getElementById('edit-id').value = item.id;
@@ -498,6 +551,9 @@
       document.getElementById('modal-edit').classList.add('hidden');
     }
 
+    // -------------------------------------------------------------
+    // 6. SUBMIT EDIT DATA
+    // -------------------------------------------------------------
     async function submitEditData(e) {
       e.preventDefault();
       const id = document.getElementById('edit-id').value;
@@ -561,6 +617,9 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 7. SIMPAN DATA BARU
+    // -------------------------------------------------------------
     async function simpanData(e) {
       e.preventDefault();
       
@@ -622,6 +681,9 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 8. HAPUS KANDIDAT
+    // -------------------------------------------------------------
     async function hapusKandidat(id) {
       if (!confirm(`Apakah Anda yakin ingin menghapus kandidat ID ${id}?`)) return;
 
@@ -637,10 +699,13 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 9. GANTI STATUS CEPAT (READY / TER-SALUR)
+    // -------------------------------------------------------------
     async function gantiStatus(id, statusSekarang) {
       const statusBaru = statusSekarang === 'READY WORK' ? 'TER-SALUR' : 'READY WORK';
 
-      if (!confirm(`Ubah status kandidat ${id} menjadi "${statusBaru}"?`)) return;
+      if (!confirm(`Ubah status kandidat ID ${id} menjadi "${statusBaru}"?`)) return;
 
       try {
         const res = await fetch(`/api/candidates/${id}/status`, {
@@ -663,6 +728,9 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 10. LOGOUT ADMIN
+    // -------------------------------------------------------------
     async function logoutAdmin() {
       try {
         const res = await fetch('/api/logout', { method: 'POST' });
@@ -676,6 +744,7 @@
       }
     }
 
+    // Init Data saat Halaman Selesai Dimuat
     document.addEventListener('DOMContentLoaded', loadDataAdmin);
   </script>
 </body>
