@@ -31,15 +31,6 @@
       background-size: 24px 24px;
       opacity: 0.08;
     }
-
-    /* ORB AMBIENT BLUR DEKORATIF */
-    .ambient-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 1;
-    }
   </style>
 </head>
 <body class="bg-katalog-theme text-slate-800 antialiased min-h-screen flex flex-col justify-between relative">
@@ -72,7 +63,7 @@
       <!-- Tombol Navigasi Admin & Auth -->
       <div class="flex flex-wrap items-center justify-center gap-2">
         <!-- Container Dynamic WA Admin Header -->
-        <div id="header-wa-container" class="flex gap-1.5"></div>
+        <div id="header-wa-container" class="flex gap-1.5 flex-wrap"></div>
 
         <a id="btn-dashboard" 
            href="/admin" 
@@ -94,7 +85,7 @@
       
       <!-- FILTER BAR -->
       <div class="bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-teal-100 shadow-sm mb-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 items-center">
           
           <div>
             <input type="text" id="filter-search" oninput="filterData()" 
@@ -121,6 +112,12 @@
               <option value="1sampai3">Pengalaman: 1 - 3 Tahun</option>
               <option value="lebih3">Pengalaman: &gt; 3 Tahun</option>
             </select>
+          </div>
+
+          <div>
+            <button onclick="resetFilter()" class="w-full text-xs p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-lg transition-all border border-slate-200">
+              🔄 Reset Filter
+            </button>
           </div>
 
         </div>
@@ -186,7 +183,7 @@
     let allCandidates = [];
     let isAdminLoggedIn = false;
 
-    // 📌 FUNGSI KEAMANAN FORMAT NOMOR WHATSAPP (Ubah 08xx -> 628xx)
+    // 📌 FORMAT NOMOR WHATSAPP (08xx -> 628xx)
     function formatWaNumber(phone) {
       if (!phone) return '';
       let cleaned = phone.replace(/[^0-9]/g, '');
@@ -196,10 +193,11 @@
       return cleaned;
     }
 
-    // 📌 FETCH LIST WA ADMIN DARI SERVER
+    // FETCH LIST WA ADMIN DARI SERVER
     async function fetchAdminWa() {
       try {
         const res = await fetch('/api/admin-wa');
+        if (!res.ok) return;
         const data = await res.json();
         if (data.success && data.data) {
           adminWaList = data.data;
@@ -215,18 +213,23 @@
       const container = document.getElementById('header-wa-container');
       if (!container || adminWaList.length === 0) return;
 
-      container.innerHTML = adminWaList.map(admin => `
-        <a href="${admin.linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin bertanya tentang kandidat di Yayasan.')}" 
-           target="_blank" 
-           class="text-[11px] px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">
-          💬 ${admin.nama}
-        </a>
-      `).join('');
+      container.innerHTML = adminWaList.map(admin => {
+        const waNum = formatWaNumber(admin.noHp);
+        const linkWa = admin.linkWa || `https://wa.me/${waNum}`;
+        return `
+          <a href="${linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin bertanya tentang kandidat di Yayasan.')}" 
+             target="_blank" 
+             class="text-[11px] px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">
+            💬 ${admin.nama}
+          </a>
+        `;
+      }).join('');
     }
 
     async function checkAuthStatus() {
       try {
         const res = await fetch('/api/check-auth');
+        if (!res.ok) return;
         const data = await res.json();
         isAdminLoggedIn = data.isAdmin;
 
@@ -259,16 +262,22 @@
     async function fetchCandidates() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());
-        if (res.ok) {
-          allCandidates = await res.json();
-          filterData();
-        }
+        if (!res.ok) throw new Error("Gagal mengambil data kandidat.");
+        allCandidates = await res.json();
+        filterData();
       } catch (e) {
         document.getElementById('kandidat-container').innerHTML = `
           <div class="col-span-full text-center py-12 text-rose-500 font-medium text-sm">
-            Gagal terhubung ke server.
+            Gagal terhubung ke server atau memuat data.
           </div>`;
       }
+    }
+
+    function resetFilter() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-kategori').value = 'Semua';
+      document.getElementById('filter-pengalaman').value = 'Semua';
+      filterData();
     }
 
     function filterData() {
@@ -314,7 +323,7 @@
       container.innerHTML = candidates.map(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
 
-        // Kategori badging
+        // Kategori Badges
         let categoriesHtml = '';
         if (Array.isArray(item.kategori)) {
           categoriesHtml = item.kategori.map(k => `<span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md text-[10px] font-bold">${k}</span>`).join(' ');
@@ -341,13 +350,12 @@
 
         const cvUrl = item.fotoCv || item.foto || '';
         const rawKandidatHp = formatWaNumber(item.noHp || '');
-
         const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih...`);
 
         return `
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col hover:shadow-md transition-all">
             
-            <!-- INFORMASI KANDIDAT (ATAS) -->
+            <!-- INFORMASI KANDIDAT -->
             <div>
               <div class="relative mb-3">
                 <img src="${item.foto || '/placeholder.png'}" alt="${item.nama}" class="w-full h-48 object-cover rounded-xl border border-slate-100" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Kandidat'">
@@ -371,7 +379,7 @@
                 <p><b>Asal:</b> ${item.asal || '-'}</p>
                 <p><b>Keahlian:</b> ${item.keahlian || '-'}</p>
                 
-                <!-- 📌 NOMOR HP KANDIDAT -->
+                <!-- NOMOR HP KANDIDAT -->
                 ${isAdminLoggedIn ? `
                   <p class="text-teal-800 font-bold bg-teal-100/70 p-1.5 rounded-lg mt-2 flex items-center justify-between">
                     <span>📱 No HP:</span>
@@ -398,7 +406,7 @@
                   </button>
                 ` : ''}
 
-                <!-- 📌 TOMBOL WHATSAPP (LOGGED IN vs PUBLIC) -->
+                <!-- TOMBOL WHATSAPP -->
                 ${isAdminLoggedIn && rawKandidatHp ? `
                   <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
                     💬 Chat Kandidat via WhatsApp
@@ -419,7 +427,9 @@
     // Modal CV Functions
     function bukaModalCv(nama, url) {
       document.getElementById('modal-cv-nama').innerText = nama;
-      document.getElementById('modal-cv-img').src = url;
+      const img = document.getElementById('modal-cv-img');
+      img.src = url;
+      img.alt = `Dokumen CV ${nama}`;
       document.getElementById('modal-cv').classList.remove('hidden');
     }
 
@@ -437,8 +447,9 @@
       if (adminWaList.length > 0) {
         listContainer.innerHTML = adminWaList.map(admin => {
           const waNum = formatWaNumber(admin.noHp);
+          const linkWa = admin.linkWa || `https://wa.me/${waNum}`;
           return `
-            <a href="https://wa.me/${waNum}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+            <a href="${linkWa}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
               💬 Chat ${admin.nama}
             </a>
           `;
@@ -453,6 +464,22 @@
     function tutupModalAdmin() {
       document.getElementById('modal-pilih-admin').classList.add('hidden');
     }
+
+    // Event Keyboard ESC & Outside Click Event
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        tutupModalCv();
+        tutupModalAdmin();
+      }
+    });
+
+    document.getElementById('modal-cv').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-cv') tutupModalCv();
+    });
+
+    document.getElementById('modal-pilih-admin').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-pilih-admin') tutupModalAdmin();
+    });
 
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchAdminWa();
