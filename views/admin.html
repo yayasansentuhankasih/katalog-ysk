@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Yayasan Sentuhan Kasih</title>
+  <title>Dashboard Admin - Yayasan Sentuhan Kasih</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -53,7 +53,7 @@
         </div>
         <div>
           <h1 class="text-xl font-extrabold text-teal-950 tracking-tight flex items-center gap-2">
-            Dashboard Panel Admin
+            Dashboard Admin
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">Online</span>
           </h1>
           <p class="text-xs font-medium text-slate-500">Kelola Data & Dokumen Kandidat - Yayasan Sentuhan Kasih</p>
@@ -91,7 +91,7 @@
             <div class="space-y-2 p-3 bg-slate-50/80 rounded-xl border border-slate-200/80" id="container-kategori-add">
               <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
                 <input type="checkbox" name="input-kategori-opt" value="Asisten Rumah Tangga (ART)" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
-                <span>Asisten Rumah Tangga (ART)</span>
+                <span>Asisten Rumah Tangga / ART</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
                 <input type="checkbox" name="input-kategori-opt" value="Baby Sitter / Pengasuh" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
@@ -112,6 +112,10 @@
               <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
                 <input type="checkbox" name="input-kategori-opt" value="Security" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
                 <span>Security</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700 hover:text-teal-900">
+                <input type="checkbox" name="input-kategori-opt" value="Chef" onchange="renderDynamicGajiAdd()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+                <span>Chef</span>
               </label>
             </div>
           </div>
@@ -285,6 +289,10 @@
             <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
               <input type="checkbox" name="edit-kategori-opt" value="Security" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
               <span>Security</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer font-medium text-slate-700">
+              <input type="checkbox" name="edit-kategori-opt" value="Chef" onchange="renderDynamicGajiEdit()" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 accent-teal-600">
+              <span>Chef</span>
             </label>
           </div>
         </div>
