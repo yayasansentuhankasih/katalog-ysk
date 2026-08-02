@@ -17,12 +17,28 @@
     } 
     .bg-katalog-theme {
       background-color: #FFE4E1 !important;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(255, 228, 225, 1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 218, 214, 0.6) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.7) 0px, transparent 50%);
       background-attachment: fixed;
     }
+
+    /* POLA PATTERN HALUS & SOFT */
     .bg-pattern {
-      background-image: radial-gradient(#00a896 0.6px, transparent 0.6px);
-      background-size: 20px 20px;
-      opacity: 0.12;
+      background-image: radial-gradient(#0d9488 0.65px, transparent 0.65px);
+      background-size: 24px 24px;
+      opacity: 0.08;
+    }
+
+    /* ORB AMBIENT BLUR DEKORATIF */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 1;
     }
   </style>
 </head>
