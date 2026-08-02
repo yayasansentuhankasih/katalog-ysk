@@ -8,7 +8,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- FontAwesome Icons (Agar Logo Selalu Muncul Bagus & Mewah) -->
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
@@ -72,17 +72,16 @@
     <!-- HEADER MEWAH -->
     <header class="pt-8 pb-6 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6">
       
-      <!-- LOGO & BRAND YAYASAN (Gunakan Icon FontAwesome Emas & Emerald yang Elegan) -->
-      <div class="flex items-center gap-3.5 bg-white/90 backdrop-blur-md p-2 pl-2.5 pr-5 rounded-2xl border border-amber-200/80 shadow-sm">
-        
-        <!-- ICON LOGO ELEGAN -->
-        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-800 to-teal-950 flex items-center justify-center text-amber-400 text-xl shadow-inner border border-amber-300/40 shrink-0">
-          <i class="fa-solid fa-hand-holding-heart"></i>
-        </div>
+      <!-- LOGO GAMBAR DIPERBESAR & TANPA WARNA LATAR/BORDER -->
+      <div class="flex items-center gap-4">
+        <img src="/logo.png" 
+             alt="Logo Yayasan" 
+             class="w-20 h-20 sm:w-24 sm:h-24 object-contain shrink-0" 
+             onerror="this.style.display='none'">
 
         <div>
-          <h2 class="text-[10px] font-extrabold uppercase tracking-widest text-amber-700 leading-tight">Yayasan</h2>
-          <h2 class="text-base font-extrabold text-emerald-950 tracking-tight leading-none mt-0.5">Sentuhan Kasih</h2>
+          <h2 class="text-xs font-extrabold uppercase tracking-widest text-amber-700 leading-tight">Yayasan</h2>
+          <h2 class="text-xl font-extrabold text-emerald-950 tracking-tight leading-none mt-0.5">Sentuhan Kasih</h2>
         </div>
       </div>
 
@@ -255,7 +254,6 @@
     let allCandidates = [];
     let isAdminLoggedIn = false;
 
-    // 📌 FORMAT NOMOR WHATSAPP (08xx -> 628xx)
     function formatWaNumber(phone) {
       if (!phone) return '';
       let cleaned = phone.replace(/[^0-9]/g, '');
@@ -265,7 +263,6 @@
       return cleaned;
     }
 
-    // FETCH LIST WA ADMIN DARI SERVER
     async function fetchAdminWa() {
       try {
         const res = await fetch('/api/admin-wa');
@@ -280,7 +277,6 @@
       }
     }
 
-    // Render Tombol WA di Header Utama
     function renderHeaderWaButtons() {
       const container = document.getElementById('header-wa-container');
       if (!container || adminWaList.length === 0) return;
@@ -398,7 +394,6 @@
       container.innerHTML = candidates.map(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
 
-        // Kategori Badges
         let categoriesHtml = '';
         if (Array.isArray(item.kategori)) {
           categoriesHtml = item.kategori.map(k => `<span class="bg-amber-50/80 text-amber-900 border border-amber-200/70 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${k}</span>`).join(' ');
@@ -406,7 +401,6 @@
           categoriesHtml = `<span class="bg-amber-50/80 text-amber-900 border border-amber-200/70 px-2.5 py-0.5 rounded-lg text-[10px] font-bold">${item.kategori || '-'}</span>`;
         }
 
-        // Gaji Rendering
         let gajiHtml = '';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
           gajiHtml = Object.entries(item.gaji).map(([k, v]) => `
@@ -430,29 +424,24 @@
         return `
           <div class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl border border-amber-100/70 flex flex-col transition-all duration-300 hover:-translate-y-1">
             
-            <!-- INFORMASI KANDIDAT -->
             <div>
               <div class="relative mb-3.5 overflow-hidden rounded-2xl group">
                 <img src="${item.foto || '/placeholder.png'}" alt="${item.nama}" class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Kandidat'">
                 
-                <!-- Badge Status -->
                 <span class="absolute top-3 right-3 px-3 py-1 text-[10px] font-extrabold tracking-wider uppercase rounded-full shadow-md ${isReady ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-white'}">
                   ${isReady ? '• Ready Work' : 'Ter-salur'}
                 </span>
 
-                <!-- Badge ID -->
                 <span class="absolute bottom-3 left-3 bg-slate-950/75 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-lg text-[10px] font-bold backdrop-blur-md">
                   ID: #${item.id}
                 </span>
               </div>
 
-              <!-- Nama & Kategori -->
               <h3 class="font-extrabold text-emerald-950 text-base leading-snug mb-1.5">${item.nama}</h3>
               <div class="flex flex-wrap gap-1 mb-3">
                 ${categoriesHtml}
               </div>
 
-              <!-- Detail Biodata Ringkas -->
               <div class="space-y-1.5 text-xs text-slate-600 mb-4 bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
                 <div class="grid grid-cols-2 gap-1 border-b border-slate-200/60 pb-1.5">
                   <p><b class="text-slate-800">Umur:</b> ${item.umur || '-'} Thn</p>
@@ -462,7 +451,6 @@
                 <p><b class="text-slate-800">Asal:</b> ${item.asal || '-'}</p>
                 <p><b class="text-slate-800">Keahlian:</b> ${item.keahlian || '-'}</p>
                 
-                <!-- NOMOR HP KANDIDAT -->
                 ${isAdminLoggedIn ? `
                   <div class="text-emerald-900 font-bold bg-emerald-50 border border-emerald-200/70 p-2 rounded-xl mt-2 flex items-center justify-between">
                     <span class="text-[11px]"><i class="fa-solid fa-phone text-emerald-700"></i> No HP:</span>
@@ -476,15 +464,12 @@
               </div>
             </div>
 
-            <!-- BAGIAN BAWAH: GAJI & ACTION BUTTONS -->
             <div class="mt-auto pt-3 border-t border-slate-100 space-y-3">
               
-              <!-- Box Gaji -->
               <div class="bg-amber-50/50 p-2.5 rounded-xl border border-amber-100 space-y-1">
                 ${gajiHtml}
               </div>
 
-              <!-- Action Buttons -->
               <div class="space-y-2">
                 ${cvUrl ? `
                   <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 text-slate-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-98">
@@ -492,7 +477,6 @@
                   </button>
                 ` : ''}
 
-                <!-- TOMBOL WHATSAPP -->
                 ${isAdminLoggedIn && rawKandidatHp ? `
                   <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
                     <i class="fa-brands fa-whatsapp text-sm"></i> Chat Direct Kandidat
@@ -511,7 +495,6 @@
       }).join('');
     }
 
-    // Modal CV Functions
     function bukaModalCv(nama, url) {
       document.getElementById('modal-cv-nama').innerText = nama;
       const img = document.getElementById('modal-cv-img');
@@ -524,7 +507,6 @@
       document.getElementById('modal-cv').classList.add('hidden');
     }
 
-    // Modal Pilih Admin WA Functions
     function bukaModalAdmin(namaKandidat, idKandidat) {
       document.getElementById('modal-nama-kandidat').innerText = namaKandidat;
       const listContainer = document.getElementById('modal-admin-list');
@@ -552,7 +534,6 @@
       document.getElementById('modal-pilih-admin').classList.add('hidden');
     }
 
-    // Event Listener Keyboard ESC & Outside Click Event
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         tutupModalCv();
@@ -568,7 +549,6 @@
       if (e.target.id === 'modal-pilih-admin') tutupModalAdmin();
     });
 
-    // Inisialisasi Data
     document.addEventListener('DOMContentLoaded', async () => {
       await fetchAdminWa();
       await checkAuthStatus();
