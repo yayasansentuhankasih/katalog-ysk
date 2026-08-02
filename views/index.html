@@ -54,7 +54,10 @@
       </div>
 
       <!-- Tombol Navigasi Admin & Auth -->
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <!-- Container Dynamic WA Admin Header -->
+        <div id="header-wa-container" class="flex gap-1.5"></div>
+
         <a id="btn-dashboard" 
            href="/admin" 
            class="hidden text-xs px-3.5 py-2 bg-teal-800 hover:bg-teal-900 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
@@ -139,22 +142,70 @@
     </div>
   </div>
 
+  <!-- 📌 MODAL PILIH ADMIN WA -->
+  <div id="modal-pilih-admin" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-5 border border-teal-100 text-center">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-sm font-extrabold text-slate-800">💬 Pilih Admin WhatsApp</h3>
+        <button onclick="tutupModalAdmin()" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">✕</button>
+      </div>
+      
+      <p class="text-xs text-slate-500 mb-4">Silakan pilih salah satu Admin untuk menanyakan kandidat <b id="modal-nama-kandidat" class="text-teal-800"></b>:</p>
+
+      <div id="modal-admin-list" class="space-y-2.5">
+        <!-- List Tombol Admin dimasukkan via JavaScript -->
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100">
+        <button onclick="tutupModalAdmin()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl cursor-pointer">
+          Batal
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // 📌 NOMOR HP ADMIN YAYASAN (Ganti sesuai nomor WhatsApp Admin Anda)
-    const NO_HP_ADMIN = "081234567890"; 
-
+    let adminWaList = [];
     let allCandidates = [];
     let isAdminLoggedIn = false;
 
     // 📌 FUNGSI KEAMANAN FORMAT NOMOR WHATSAPP (Ubah 08xx -> 628xx)
     function formatWaNumber(phone) {
       if (!phone) return '';
-      let cleaned = phone.replace(/[^0-9]/g, ''); // Hapus karakter non-angka
+      let cleaned = phone.replace(/[^0-9]/g, '');
       if (cleaned.startsWith('0')) {
-        cleaned = '62' + cleaned.slice(1); // Ubah 0812... jadi 62812...
+        cleaned = '62' + cleaned.slice(1);
       }
       return cleaned;
+    }
+
+    // 📌 FETCH LIST WA ADMIN DARI SERVER
+    async function fetchAdminWa() {
+      try {
+        const res = await fetch('/api/admin-wa');
+        const data = await res.json();
+        if (data.success && data.data) {
+          adminWaList = data.data;
+          renderHeaderWaButtons();
+        }
+      } catch (e) {
+        console.error("Gagal mengambil data WA Admin.");
+      }
+    }
+
+    // Render Tombol WA di Header Utama
+    function renderHeaderWaButtons() {
+      const container = document.getElementById('header-wa-container');
+      if (!container || adminWaList.length === 0) return;
+
+      container.innerHTML = adminWaList.map(admin => `
+        <a href="${admin.linkWa}?text=${encodeURIComponent('Halo ' + admin.nama + ', saya ingin bertanya tentang kandidat di Yayasan.')}" 
+           target="_blank" 
+           class="text-[11px] px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">
+          💬 ${admin.nama}
+        </a>
+      `).join('');
     }
 
     async function checkAuthStatus() {
@@ -244,8 +295,6 @@
         return;
       }
 
-      const formattedAdminHp = formatWaNumber(NO_HP_ADMIN);
-
       container.innerHTML = candidates.map(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
 
@@ -257,7 +306,7 @@
           categoriesHtml = `<span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md text-[10px] font-bold">${item.kategori || '-'}</span>`;
         }
 
-        // Gaji Rendering (RESPONSIF & RAPI UNTUK BANYAK KATEGORI)
+        // Gaji Rendering
         let gajiHtml = '';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
           gajiHtml = Object.entries(item.gaji).map(([k, v]) => `
@@ -277,8 +326,6 @@
         const cvUrl = item.fotoCv || item.foto || '';
         const rawKandidatHp = formatWaNumber(item.noHp || '');
 
-        // Pesan otomatis
-        const waMessageAdmin = encodeURIComponent(`Halo Admin Yayasan, saya tertarik dengan kandidat:\n\n*Nama:* ${item.nama}\n*ID:* #${item.id}`);
         const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih...`);
 
         return `
@@ -322,7 +369,7 @@
               </div>
             </div>
 
-            <!-- BAGIAN BAWAH: GAJI & TOMBOL (SANGAT RAPI DENGAN mt-auto) -->
+            <!-- BAGIAN BAWAH: GAJI & TOMBOL -->
             <div class="mt-auto pt-2 border-t border-slate-100 space-y-3">
               <div class="space-y-1">
                 ${gajiHtml}
@@ -335,15 +382,15 @@
                   </button>
                 ` : ''}
 
-                <!-- 📌 TOMBOL WHATSAPP SINGLE -->
+                <!-- 📌 TOMBOL WHATSAPP (LOGGED IN vs PUBLIC) -->
                 ${isAdminLoggedIn && rawKandidatHp ? `
                   <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
                     💬 Chat Kandidat via WhatsApp
                   </a>
                 ` : `
-                  <a href="https://wa.me/${formattedAdminHp}?text=${waMessageAdmin}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                  <button onclick="bukaModalAdmin('${item.nama}', '${item.id}')" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer">
                     💬 Hubungi Admin via WhatsApp
-                  </a>
+                  </button>
                 `}
               </div>
             </div>
@@ -353,6 +400,7 @@
       }).join('');
     }
 
+    // Modal CV Functions
     function bukaModalCv(nama, url) {
       document.getElementById('modal-cv-nama').innerText = nama;
       document.getElementById('modal-cv-img').src = url;
@@ -363,7 +411,35 @@
       document.getElementById('modal-cv').classList.add('hidden');
     }
 
+    // Modal Pilih Admin WA Functions
+    function bukaModalAdmin(namaKandidat, idKandidat) {
+      document.getElementById('modal-nama-kandidat').innerText = namaKandidat;
+      const listContainer = document.getElementById('modal-admin-list');
+      
+      const message = encodeURIComponent(`Halo, saya tertarik dengan kandidat:\n\n*Nama:* ${namaKandidat}\n*ID:* #${idKandidat}`);
+
+      if (adminWaList.length > 0) {
+        listContainer.innerHTML = adminWaList.map(admin => {
+          const waNum = formatWaNumber(admin.noHp);
+          return `
+            <a href="https://wa.me/${waNum}?text=${message}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+              💬 Chat ${admin.nama}
+            </a>
+          `;
+        }).join('');
+      } else {
+        listContainer.innerHTML = `<p class="text-xs text-rose-500">Tidak ada nomor Admin yang tersedia.</p>`;
+      }
+
+      document.getElementById('modal-pilih-admin').classList.remove('hidden');
+    }
+
+    function tutupModalAdmin() {
+      document.getElementById('modal-pilih-admin').classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
+      await fetchAdminWa();
       await checkAuthStatus();
       fetchCandidates();
     });
