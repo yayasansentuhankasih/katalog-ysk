@@ -43,11 +43,11 @@ if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), 'utf-8');
 }
 
-// ------------------- DUMMY SESSION SYSTEM (SUPPORT 2 ADMIN LOGIN) -------------------
-const ADMIN_ACCOUNTS = [
-  { username: process.env.ADMIN1_USER || 'admin1', password: process.env.ADMIN1_PASS || 'admin123' },
-  { username: process.env.ADMIN2_USER || 'admin2', password: process.env.ADMIN2_PASS || 'admin456' }
-];
+// ------------------- DUMMY SESSION SYSTEM (SINGLE ADMIN ACCOUNT) -------------------
+const ADMIN_ACCOUNT = {
+  username: process.env.ADMIN_USER || 'sentuhan kasih',
+  password: process.env.ADMIN_PASS || 'yayasan1996'  // <-- Ganti 'admin123' di sini
+};
 
 let isSessionAdminLoggedIn = false; 
 
@@ -220,25 +220,16 @@ app.get('/api/admin-wa', (req, res) => {
   res.json({ success: true, data: WA_ADMINS });
 });
 
-// Endpoint Login untuk 2 Admin
+// 🟢 ENDPOINT LOGIN (SUDAH DIGANTI MENJADI 1 ADMIN TUNGGAL)
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  // Cek apakah yang login adalah Admin 1 atau Admin 2
-  const validAdmin = ADMIN_ACCOUNTS.find(
-    acc => acc.username === username && acc.password === password
-  );
-
-  if (validAdmin) {
+  if (username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password) {
     isSessionAdminLoggedIn = true;
-    return res.json({ success: true, message: `Login berhasil sebagai ${validAdmin.username}!` });
+    return res.json({ success: true, message: 'Login berhasil!' });
   }
 
   return res.status(401).json({ success: false, message: 'Username atau password salah!' });
-});
-
-app.get('/api/check-auth', (req, res) => {
-  res.json({ isAdmin: isSessionAdminLoggedIn });
 });
 
 app.post('/api/logout', (req, res) => {
