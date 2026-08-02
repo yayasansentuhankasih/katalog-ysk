@@ -67,6 +67,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 // ------------------- CONFIG EXPRESS SESSION -------------------
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT;
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'sentuhan_kasih_secret_key_123',
   resave: false,
@@ -74,8 +76,8 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite:'lax',
-    secure: false
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction ? true : false // Auto-detect HTTPS di Railway
   }
 }));
 
