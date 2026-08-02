@@ -13,8 +13,10 @@ app.set('trust proxy', 1); // 👈 ✅ 2. DITAMBAHKAN UNTUK HANDLING PROXY CLOUD
 
 // ------------------- MIDDLEWARE CORS & BODY PARSER -------------------
 app.use(cors({
-  origin: true, // Mengizinkan domain frontend mengakses API
-  credentials: true // Mengizinkan pengiriman Cookie Session
+  origin: function (origin, callback) {
+    return callback(null, true); // Dinamis mengizinkan origin pengirim
+  },
+  credentials: true
 }));
 
 app.use(express.json());
@@ -70,10 +72,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // Sesi bertahan 24 Jam
+    maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production' // Otomatis aktifkan secure jika di production
+    sameSite: (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) ? 'none' : 'lax',
+    secure: (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) ? true : false
   }
 }));
 

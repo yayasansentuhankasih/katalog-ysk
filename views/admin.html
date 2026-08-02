@@ -363,6 +363,26 @@
   <script>
     let globalCandidatesData = [];
 
+    // ➕ 1. TAMBAHKAN FUNGSI CEK AUTHENTIKASI SAAT HALAMAN DIBUKA
+    async function checkAuthOnLoad() {
+      try {
+        const res = await fetch('/api/check-auth');
+        const data = await res.json();
+        
+        // Jika ternyata belum login, lempar langsung ke halaman login
+        if (!data.isAdmin) {
+          alert('🔒 Anda belum login atau sesi telah berakhir.');
+          window.location.href = '/login';
+          return;
+        }
+        
+        // Jika sudah login, baru muat data kandidat
+        loadDataAdmin();
+      } catch (err) {
+        window.location.href = '/login';
+      }
+    }
+
     // -------------------------------------------------------------
     // 1. RENDER GAJI DINAMIS (FORM TAMBAH)
     // -------------------------------------------------------------
@@ -430,6 +450,13 @@
     async function loadDataAdmin() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());
+
+        // ➕ TAMBAHKAN INI:
+        if (res.status === 401) {
+          alert('🔒 Sesi telah berakhir. Silakan login kembali.');
+          window.location.href = '/login';
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
           globalCandidatesData = data;
@@ -639,6 +666,7 @@
     }
 
     // -------------------------------------------------------------
+   // -------------------------------------------------------------
     // 7. SIMPAN DATA BARU
     // -------------------------------------------------------------
     async function simpanData(e) {
@@ -684,6 +712,13 @@
           body: formData
         });
 
+        // ➕ TAMBAHAN: Cek jika sesi login habis/ditolak oleh middleware auth
+        if (res.status === 401) {
+          alert('🔒 Akses ditolak! Sesi login Anda telah berakhir.');
+          window.location.href = '/login';
+          return;
+        }
+
         const result = await res.json();
 
         if (res.ok && result.success) {
@@ -710,6 +745,14 @@
 
       try {
         const res = await fetch(`/api/candidates/${id}`, { method: 'DELETE' });
+
+        // ➕ TAMBAHKAN INI:
+        if (res.status === 401) {
+          alert('🔒 Sesi login telah berakhir.');
+          window.location.href = '/login';
+          return;
+        }
+
         if (res.ok) {
           loadDataAdmin();
         } else {
@@ -766,7 +809,7 @@
     }
 
     // Init Data saat Halaman Selesai Dimuat
-    document.addEventListener('DOMContentLoaded', loadDataAdmin);
+    document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
   </script>
 </body>
 </html>
