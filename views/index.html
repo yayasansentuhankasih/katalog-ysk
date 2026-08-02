@@ -257,20 +257,20 @@
           categoriesHtml = `<span class="bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md text-[10px] font-bold">${item.kategori || '-'}</span>`;
         }
 
-        // Gaji Rendering
+        // Gaji Rendering (RESPONSIF & RAPI UNTUK BANYAK KATEGORI)
         let gajiHtml = '';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
           gajiHtml = Object.entries(item.gaji).map(([k, v]) => `
-            <div class="flex justify-between items-center text-xs">
-              <span class="text-slate-500 font-medium">${k}:</span>
-              <span class="font-extrabold text-teal-700">Rp ${Number(v).toLocaleString('id-ID')}</span>
+            <div class="flex items-baseline justify-between gap-2 text-xs border-b border-slate-50 pb-1 last:border-none">
+              <span class="text-slate-600 font-medium leading-tight flex-1">${k}:</span>
+              <span class="font-extrabold text-teal-700 whitespace-nowrap">Rp ${Number(v).toLocaleString('id-ID')}</span>
             </div>
           `).join('');
         } else {
           gajiHtml = `
-            <div class="flex justify-between items-center text-xs">
-              <span class="text-slate-500 font-medium">Gaji:</span>
-              <span class="font-extrabold text-teal-700">Rp ${Number(item.gaji || 0).toLocaleString('id-ID')}</span>
+            <div class="flex items-center justify-between gap-2 text-xs">
+              <span class="text-slate-600 font-medium">Gaji:</span>
+              <span class="font-extrabold text-teal-700 whitespace-nowrap">Rp ${Number(item.gaji || 0).toLocaleString('id-ID')}</span>
             </div>`;
         }
 
@@ -282,7 +282,9 @@
         const waMessageKandidat = encodeURIComponent(`Halo ${item.nama}, kami dari Yayasan Sentuhan Kasih...`);
 
         return `
-          <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col justify-between hover:shadow-md transition-all">
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-100/80 flex flex-col hover:shadow-md transition-all">
+            
+            <!-- INFORMASI KANDIDAT (ATAS) -->
             <div>
               <div class="relative mb-3">
                 <img src="${item.foto || '/placeholder.png'}" alt="${item.nama}" class="w-full h-48 object-cover rounded-xl border border-slate-100" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Kandidat'">
@@ -318,30 +320,34 @@
                   </p>
                 `}
               </div>
+            </div>
 
-              <div class="border-t border-slate-100 pt-2 space-y-1 mb-4">
+            <!-- BAGIAN BAWAH: GAJI & TOMBOL (SANGAT RAPI DENGAN mt-auto) -->
+            <div class="mt-auto pt-2 border-t border-slate-100 space-y-3">
+              <div class="space-y-1">
                 ${gajiHtml}
+              </div>
+
+              <div class="space-y-2">
+                ${cvUrl ? `
+                  <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                    📄 Lihat Dokumen CV
+                  </button>
+                ` : ''}
+
+                <!-- 📌 TOMBOL WHATSAPP SINGLE -->
+                ${isAdminLoggedIn && rawKandidatHp ? `
+                  <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                    💬 Chat Kandidat via WhatsApp
+                  </a>
+                ` : `
+                  <a href="https://wa.me/${formattedAdminHp}?text=${waMessageAdmin}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                    💬 Hubungi Admin via WhatsApp
+                  </a>
+                `}
               </div>
             </div>
 
-            <div class="space-y-2">
-              ${cvUrl ? `
-                <button onclick="bukaModalCv('${item.nama}', '${cvUrl}')" class="w-full py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-                  📄 Lihat Dokumen CV
-                </button>
-              ` : ''}
-
-              <!-- 📌 TOMBOL WHATSAPP SINGLE -->
-              ${isAdminLoggedIn && rawKandidatHp ? `
-                <a href="https://wa.me/${rawKandidatHp}?text=${waMessageKandidat}" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                  💬 Chat Kandidat via WhatsApp
-                </a>
-              ` : `
-                <a href="https://wa.me/${formattedAdminHp}?text=${waMessageAdmin}" target="_blank" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-[0.98] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                  💬 Hubungi Admin via WhatsApp
-                </a>
-              `}
-            </div>
           </div>
         `;
       }).join('');
