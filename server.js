@@ -11,6 +11,7 @@ const UPLOAD_DIR = path.join(__dirname, 'public', 'uploads');
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
+// Pastikan direktori selalu dibuat jika belum ada
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
