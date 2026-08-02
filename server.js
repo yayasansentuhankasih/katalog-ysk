@@ -6,8 +6,25 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// =================================================================
+// 📱 KONFIGURASI 2 NOMOR WA ADMIN
+// =================================================================
+const WA_ADMINS = [
+  { 
+    id: 1,
+    nama: 'Admin 1', 
+    noHp: '6285111021218', // <-- Ganti dengan No WA Admin 1
+    linkWa: 'https://wa.me/6285111021218'
+  },
+  { 
+    id: 2,
+    nama: 'Admin 2', 
+    noHp: '6281399243318', // <-- Ganti dengan No WA Admin 2
+    linkWa: 'https://wa.me/6281399243318'
+  }
+];
+
 // ------------------- DIREKTORI & INITIALIZATION (1 VOLUME STORAGE) -------------------
-// Folder induk 'storage' akan di-mount ke Volume Railway (/app/storage)
 const STORAGE_DIR = path.join(__dirname, 'storage');
 const UPLOAD_DIR = path.join(STORAGE_DIR, 'uploads');
 const DATA_DIR = path.join(STORAGE_DIR, 'data');
@@ -26,7 +43,12 @@ if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
 }
 
-// ------------------- DUMMY SESSION SYSTEM -------------------
+// ------------------- DUMMY SESSION SYSTEM (SUPPORT 2 ADMIN LOGIN) -------------------
+const ADMIN_ACCOUNTS = [
+  { username: process.env.ADMIN1_USER || 'admin1', password: process.env.ADMIN1_PASS || 'admin123' },
+  { username: process.env.ADMIN2_USER || 'admin2', password: process.env.ADMIN2_PASS || 'admin456' }
+];
+
 let isSessionAdminLoggedIn = false; 
 
 const authAdminMiddleware = (req, res, next) => {
@@ -181,15 +203,26 @@ app.get('/dashboard', authAdminMiddleware, (req, res) => {
 });
 
 // =================================================================
-// 🔐 2. API AUTHENTICATION
+// 🔐 2. API AUTHENTICATION & KONTAK ADMIN
 // =================================================================
 
+// Endpoint untuk frontend mengambil data nomor WA Admin
+app.get('/api/admin-wa', (req, res) => {
+  res.json({ success: true, data: WA_ADMINS });
+});
+
+// Endpoint Login untuk 2 Admin
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
-  if (username === 'admin' && password === 'admin123') {
+  // Cek apakah yang login adalah Admin 1 atau Admin 2
+  const validAdmin = ADMIN_ACCOUNTS.find(
+    acc => acc.username === username && acc.password === password
+  );
+
+  if (validAdmin) {
     isSessionAdminLoggedIn = true;
-    return res.json({ success: true, message: 'Login berhasil!' });
+    return res.json({ success: true, message: `Login berhasil sebagai ${validAdmin.username}!` });
   }
 
   return res.status(401).json({ success: false, message: 'Username atau password salah!' });
