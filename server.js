@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const session = require('express-session'); // ✅ DITAMBAHKAN
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,80 +14,74 @@ const WA_ADMINS = [
   { 
     id: 1,
     nama: 'Admin 1', 
-    noHp: '6285111021218', // <-- Ganti dengan No WA Admin 1
+    noHp: '6285111021218', 
     linkWa: 'https://wa.me/6285111021218'
   },
   { 
     id: 2,
     nama: 'Admin 2', 
-    noHp: '6281399243318', // <-- Ganti dengan No WA Admin 2
+    noHp: '6281399243318', 
     linkWa: 'https://wa.me/6281399243318'
   }
 ];
 
-// ------------------- DIREKTORI & INITIALIZATION (RAILWAY VOLUME STORAGE) -------------------
-// Menggunakan jalur aman Railway Volume (/app/storage) atau folder lokal storage
+// ------------------- DIREKTORI & INITIALIZATION -------------------
 const STORAGE_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(__dirname, 'storage');
 const UPLOAD_DIR = path.join(STORAGE_DIR, 'uploads');
 const DATA_DIR = path.join(STORAGE_DIR, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'candidates.json');
 
-// Pastikan direktori selalu dibuat secara otomatis jika belum ada
 [UPLOAD_DIR, DATA_DIR].forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
 
-// Pastikan file candidates.json ada dan berisi array JSON yang valid
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), 'utf-8');
 }
 
-// ------------------- DUMMY SESSION SYSTEM (SINGLE ADMIN ACCOUNT) -------------------
+// ------------------- DUMMY ACCOUNT CONFIG -------------------
 const ADMIN_ACCOUNT = {
   username: process.env.ADMIN_USER || 'sentuhan kasih',
-  password: process.env.ADMIN_PASS || 'yayasan1996'  // <-- Ganti 'admin123' di sini
+  password: process.env.ADMIN_PASS || 'yayasan1996'
 };
-
-let isSessionAdminLoggedIn = false; 
-
-const authAdminMiddleware = (req, res, next) => {
-  if (isSessionAdminLoggedIn) {
-    return next();
-  }
-  return res.status(401).json({ success: false, message: 'Akses ditolak. Silakan login terlebih dahulu.' });
-};
-
-// ------------------- MULTER CONFIG (UPLOAD FILE) -------------------
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-const upload = multer({ storage });
 
 // ------------------- MIDDLEWARE EXPRESS -------------------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Menyajikan foto dari folder /storage/uploads agar tetap diakses via URL /uploads/...
 app.use('/uploads', express.static(UPLOAD_DIR));
+
+// ------------------- CONFIG EXPRESS SESSION (DIPERBAIKI) -------------------
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'sentuhan_kasih_secret_key_123',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // Sesi bertahan 24 Jam
+    httpOnly: true,
+    sameSite: 'lax' // Memastikan cookie aman saat berpindah halaman/membuka WA
+  }
+}));
+
+// Middleware Auth berbasis Session Cookie
+const authAdminMiddleware = (req, res, next) => {
+  if (req.session && req.session.isAdmin) {
+    return next();
+  }
+  return res.status(401).json({ success: false, message: 'Akses ditolak. Silakan login terlebih dahulu.' });
+};
 
 // ------------------- HELPER DATA JSON -------------------
 function getCandidates() {
   try {
-    if (!fs.existsSync(DATA_FILE)) {
-      return [];
-    }
+    if (!fs.existsSync(DATA_FILE)) return [];
     const data = fs.readFileSync(DATA_FILE, 'utf-8');
-    if (!data.trim()) return []; // Penanganan jika file kosong
+    if (!data.trim()) return [];
     return JSON.parse(data);
   } catch (err) {
-    console.error(' Error membaca candidates.json:', err.message);
+    console.error('Error membaca candidates.json:', err.message);
     return [];
   }
 }
@@ -95,7 +90,7 @@ function saveCandidates(data) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.error(' Error menyimpan candidates.json:', err.message);
+    console.error('Error menyimpan candidates.json:', err.message);
   }
 }
 
@@ -187,6 +182,16 @@ function parseKategoriAndGaji(kategoriRaw, gajiRaw) {
   return { kategoriList, gajiResult };
 }
 
+// ------------------- MULTER CONFIG (UPLOAD FILE) -------------------
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage });
+
 // =================================================================
 // 🌐 1. ROUTING HALAMAN WEB
 // =================================================================
@@ -196,7 +201,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  if (isSessionAdminLoggedIn) {
+  if (req.session && req.session.isAdmin) {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
   } else {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
@@ -215,30 +220,43 @@ app.get('/dashboard', authAdminMiddleware, (req, res) => {
 // 🔐 2. API AUTHENTICATION & KONTAK ADMIN
 // =================================================================
 
-// Endpoint untuk frontend mengambil data nomor WA Admin
+// Endpoint untuk cek status login admin dari frontend (index.html)
+app.get('/api/check-auth', (req, res) => {
+  if (req.session && req.session.isAdmin) {
+    return res.json({ success: true, isAdmin: true });
+  }
+  return res.json({ success: true, isAdmin: false });
+});
+
 app.get('/api/admin-wa', (req, res) => {
   res.json({ success: true, data: WA_ADMINS });
 });
 
-// 🟢 ENDPOINT LOGIN (SUDAH DIGANTI MENJADI 1 ADMIN TUNGGAL)
+// ENDPOINT LOGIN BERBASIS SESSION
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
 
   if (username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password) {
-    isSessionAdminLoggedIn = true;
+    req.session.isAdmin = true; // ✅ Merekam status login di Cookie Session
     return res.json({ success: true, message: 'Login berhasil!' });
   }
 
   return res.status(401).json({ success: false, message: 'Username atau password salah!' });
 });
 
+// ENDPOINT LOGOUT
 app.post('/api/logout', (req, res) => {
-  isSessionAdminLoggedIn = false;
-  res.json({ success: true, message: 'Berhasil Logout' });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Gagal logout.' });
+    }
+    res.clearCookie('connect.sid'); // Hapus cookie sesi
+    res.json({ success: true, message: 'Berhasil Logout' });
+  });
 });
 
 // =================================================================
-// 📋 3. API CANDIDATES (CRUD MULTI-KATEGORI & MULTI-GAJI)
+// 📋 3. API CANDIDATES
 // =================================================================
 
 app.get('/api/candidates', (req, res) => {
@@ -246,7 +264,6 @@ app.get('/api/candidates', (req, res) => {
   res.json(candidates);
 });
 
-// POST: Tambah Kandidat Baru
 app.post('/api/candidates', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -294,12 +311,11 @@ app.post('/api/candidates', authAdminMiddleware, upload.fields([
 
     res.json({ success: true, message: 'Data kandidat berhasil ditambahkan!', data: newCandidate });
   } catch (err) {
-    console.error(' Error POST candidate:', err.message);
+    console.error('Error POST candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal menambahkan data.' });
   }
 });
 
-// PUT: Edit Data Kandidat Lengkap
 app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
   { name: 'foto', maxCount: 1 },
   { name: 'fotoCv', maxCount: 1 }
@@ -368,12 +384,11 @@ app.put('/api/candidates/:id', authAdminMiddleware, upload.fields([
     saveCandidates(candidates);
     res.json({ success: true, message: 'Data kandidat berhasil diperbarui!' });
   } catch (err) {
-    console.error(' Error PUT candidate:', err.message);
+    console.error('Error PUT candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal memperbarui data kandidat.' });
   }
 });
 
-// PATCH: Toggle / Edit Status Cepat
 app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
@@ -391,12 +406,11 @@ app.patch('/api/candidates/:id/status', authAdminMiddleware, (req, res) => {
 
     res.json({ success: true, message: 'Status berhasil diperbarui!' });
   } catch (err) {
-    console.error(' Error PATCH status:', err.message);
+    console.error('Error PATCH status:', err.message);
     res.status(500).json({ success: false, message: 'Gagal memperbarui status.' });
   }
 });
 
-// DELETE: Hapus Data Kandidat
 app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
   try {
     const { id } = req.params;
@@ -419,7 +433,7 @@ app.delete('/api/candidates/:id', authAdminMiddleware, (req, res) => {
 
     res.json({ success: true, message: 'Kandidat berhasil dihapus!' });
   } catch (err) {
-    console.error(' Error DELETE candidate:', err.message);
+    console.error('Error DELETE candidate:', err.message);
     res.status(500).json({ success: false, message: 'Gagal menghapus kandidat.' });
   }
 });
