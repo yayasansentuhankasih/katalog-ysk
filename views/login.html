@@ -28,67 +28,69 @@
     .bg-login-theme {
       background-color: #FAF8F5;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(6, 78, 59, 0.06) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(245, 230, 211, 0.5) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.9) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 78, 59, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(245, 230, 211, 0.6) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.95) 0px, transparent 50%);
       background-attachment: fixed;
     }
 
     /* POLA DEKORATIF ORNAMEN MEWAH */
     .bg-pattern {
-      background-image: radial-gradient(#d4af37 0.55px, transparent 0.55px);
-      background-size: 30px 30px;
-      opacity: 0.12;
+      background-image: radial-gradient(#d4af37 0.6px, transparent 0.6px);
+      background-size: 28px 28px;
+      opacity: 0.15;
     }
 
     /* GRADIENT TEKS GOLD ELEGAN */
     .text-gold-gradient {
-      background: linear-gradient(135deg, #b48811 0%, #a2790d 50%, #d4af37 100%);
+      background: linear-gradient(90deg, #d8b049 0%, #faeecf 50%, #b3821a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
   </style>
 </head>
-<body class="bg-login-theme text-slate-800 antialiased min-h-screen flex items-center justify-center p-4 sm:p-6 relative">
+<body class="bg-login-theme text-slate-800 antialiased min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 relative">
 
   <!-- Pattern Overlay -->
   <div class="fixed inset-0 bg-pattern pointer-events-none z-0"></div>
 
-  <!-- CONTAINER LOGIN -->
-  <div class="relative z-10 w-full max-w-md">
-    
+  <!-- Space Atas Kosong Untuk Keseimbangan Tampilan -->
+  <div class="w-full max-w-md z-10 pt-2 sm:pt-6">
     <!-- Tombol Navigasi Kembali -->
-    <div class="mb-5 text-left">
-      <a href="/" class="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-950 hover:text-amber-800 bg-white/90 hover:bg-white px-4 py-2.5 rounded-2xl border border-amber-100 shadow-sm transition-all duration-200 active:scale-98">
-        <i class="fa-solid fa-arrow-left text-amber-700"></i> Kembali ke Katalog Utama
-      </a>
-    </div>
+    <a href="/" class="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-950 hover:text-amber-800 bg-white/90 hover:bg-white px-4 py-2.5 rounded-2xl border border-amber-200/60 shadow-xs hover:shadow-md transition-all duration-200 active:scale-98">
+      <i class="fa-solid fa-arrow-left text-amber-700"></i> Kembali ke Katalog Utama
+    </a>
+  </div>
 
+  <!-- CONTAINER LOGIN UTAMA -->
+  <div class="relative z-10 w-full max-w-md my-auto py-4">
+    
     <!-- KARTU FORM LOGIN MEWAH -->
-    <div class="bg-white/90 backdrop-blur-xl p-7 sm:p-9 rounded-3xl shadow-xl border border-amber-100/90 relative overflow-hidden">
+    <div class="bg-white/90 backdrop-blur-2xl p-7 sm:p-9 rounded-3xl shadow-2xl border border-amber-100/90 ring-1 ring-amber-400/20 relative overflow-hidden">
       
       <!-- Aksesoris Accent Bar Atas -->
       <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-800 via-amber-500 to-teal-900"></div>
 
       <!-- Header Form & Logo -->
       <div class="text-center mb-7 pt-2">
-        <div class="flex justify-center mb-4">
+        <div class="flex justify-center mb-4 relative">
+          <div class="absolute inset-0 bg-amber-400/10 blur-xl rounded-full"></div>
           <img src="/logo.png" 
                alt="Logo Yayasan" 
-               class="w-20 h-20 sm:w-24 sm:h-24 object-contain shrink-0" 
+               class="w-20 h-20 sm:w-24 sm:h-24 object-contain relative z-10 drop-shadow-sm" 
                onerror="this.style.display='none'">
         </div>
         
-        <h1 class="font-serif-title text-2xl sm:text-3xl font-bold text-emerald-950 tracking-tight">
-          Login <span class="text-gold-gradient italic">Dashboard</span>
+        <h1 class="font-serif-title text-2xl sm:text-3xl font-bold tracking-tight">
+          <span class="text-gold-gradient italic">Login Dashboard</span>
         </h1>
-        <p class="text-xs text-slate-500 mt-1 font-medium">Yayasan Sentuhan Kasih</p>
+        <p class="text-xs text-slate-500 mt-1 font-semibold tracking-wide">Yayasan Sentuhan Kasih</p>
       </div>
 
       <!-- Kotak Pesan Error (Muncul jika Login Gagal) -->
-      <div id="error-box" class="hidden mb-5 p-3.5 bg-rose-50/90 border border-rose-200 rounded-2xl text-xs font-semibold text-rose-700 text-center flex items-center justify-center gap-2 shadow-2xs">
-        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm shrink-0"></i>
+      <div id="error-box" class="hidden mb-5 p-3.5 bg-rose-50/90 border border-rose-200 rounded-2xl text-xs font-semibold text-rose-700 text-center flex items-center justify-center gap-2 shadow-xs transition-all">
+        <i class="fa-solid fa-circle-exclamation text-rose-500 text-sm shrink-0"></i>
         <span id="error-text">Username atau password salah!</span>
       </div>
 
@@ -106,8 +108,9 @@
                    id="username" 
                    name="username" 
                    required 
+                   autocomplete="username"
                    placeholder="Masukkan username..." 
-                   class="w-full pl-9 pr-3 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none transition-all bg-slate-50/50 text-slate-800 text-xs font-medium placeholder-slate-400">
+                   class="w-full pl-9 pr-3 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 outline-none transition-all bg-slate-50/60 focus:bg-white text-slate-800 text-xs font-medium placeholder-slate-400">
           </div>
         </div>
 
@@ -123,33 +126,60 @@
                    id="password" 
                    name="password" 
                    required 
+                   autocomplete="current-password"
                    placeholder="••••••••" 
-                   class="w-full pl-9 pr-3 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 outline-none transition-all bg-slate-50/50 text-slate-800 text-xs font-medium placeholder-slate-400">
+                   class="w-full pl-9 pr-10 py-3.5 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 outline-none transition-all bg-slate-50/60 focus:bg-white text-slate-800 text-xs font-medium placeholder-slate-400">
+            
+            <!-- Tombol Toggle Intip Password -->
+            <button type="button" 
+                    onclick="togglePasswordVisibility()" 
+                    class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+              <i id="toggle-icon" class="fa-solid fa-eye text-xs"></i>
+            </button>
           </div>
         </div>
 
         <button type="submit" 
                 id="btn-login" 
-                class="w-full py-3.5 bg-gradient-to-r from-emerald-800 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white font-extrabold rounded-2xl transition-all shadow-md hover:shadow-lg active:scale-98 text-xs mt-3 flex items-center justify-center gap-2 cursor-pointer border border-emerald-700/50">
+                class="w-full py-3.5 bg-gradient-to-r from-emerald-800 via-emerald-900 to-teal-950 hover:from-emerald-900 hover:to-teal-950 text-white font-extrabold rounded-2xl transition-all shadow-md hover:shadow-xl active:scale-98 text-xs mt-4 flex items-center justify-center gap-2 cursor-pointer border border-emerald-700/50">
           <i class="fa-solid fa-right-to-bracket text-sm"></i> Masuk Dashboard
         </button>
       </form>
 
       <!-- Footer Kartu -->
-      <div class="mt-6 pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400 font-medium">
-        <i class="fa-solid fa-shield-halved text-amber-600/80 mr-1"></i> Akses terbatas hanya untuk pengelola sistem.
+      <div class="mt-6 pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400 font-medium flex items-center justify-center gap-1">
+        <i class="fa-solid fa-shield-halved text-amber-600/90"></i> 
+        <span>Akses terbatas khusus untuk pengelola sistem.</span>
       </div>
 
     </div>
 
-    <!-- Footnote Sederhana -->
-    <p class="text-center text-[11px] text-slate-400 mt-5 font-medium">
-      © 2026 Yayasan Sentuhan Kasih. Hak Cipta Dilindungi.
-    </p>
-
   </div>
 
+  <!-- FOOTER BAWAH -->
+  <footer class="z-10 pb-2 text-center text-[11px] text-slate-400 font-medium">
+    © 2026 Yayasan Sentuhan Kasih. Hak Cipta Dilindungi.
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
   <script>
+    // Fitur Toggle Lihat/Sembunyikan Password
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggle-icon');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+
+    // Handler Form Login API
     document.getElementById('form-login').onsubmit = async (e) => {
       e.preventDefault();
 
@@ -157,7 +187,7 @@
       const errorBox = document.getElementById('error-box');
       const errorText = document.getElementById('error-text');
 
-      // Sembunyikan pesan error sebelumnya
+      // Reset state error
       errorBox.classList.add('hidden');
       errorText.innerText = '';
 
@@ -180,7 +210,6 @@
         if (result.success) {
           window.location.href = '/admin';
         } else {
-          // Tampilkan Error di UI
           errorText.innerText = result.message || 'Username atau password salah!';
           errorBox.classList.remove('hidden');
         }
