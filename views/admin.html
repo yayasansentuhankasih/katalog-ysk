@@ -366,7 +366,11 @@
     // ➕ 1. TAMBAHKAN FUNGSI CEK AUTHENTIKASI SAAT HALAMAN DIBUKA
     async function checkAuthOnLoad() {
       try {
-        const res = await fetch('/api/check-auth');
+        const res = await fetch('/api/check-auth');{
+          method: 'GET',
+          credentials: 'include' // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
+        });
+        
         const data = await res.json();
         
         // Jika ternyata belum login, lempar langsung ke halaman login
@@ -449,7 +453,10 @@
     // -------------------------------------------------------------
     async function loadDataAdmin() {
       try {
-        const res = await fetch('/api/candidates?t=' + Date.now());
+        const res = await fetch('/api/candidates?t=' + Date.now());{
+          method: 'GET',
+          credentials: 'include' // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
+        });
 
         // ➕ TAMBAHKAN INI:
         if (res.status === 401) {
@@ -645,6 +652,7 @@
       try {
         const res = await fetch(`/api/candidates/${id}`, {
           method: 'PUT',
+          credentials: 'include', // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
           body: formData
         });
 
@@ -709,6 +717,7 @@
       try {
         const res = await fetch('/api/candidates', {
           method: 'POST',
+          credentials: 'include', // 👈 WAJIB ADA DI GET
           body: formData
         });
 
@@ -745,6 +754,7 @@
 
       try {
         const res = await fetch(`/api/candidates/${id}`, { method: 'DELETE' });
+        
 
         // ➕ TAMBAHKAN INI:
         if (res.status === 401) {
@@ -797,7 +807,10 @@
     // -------------------------------------------------------------
     async function logoutAdmin() {
       try {
-        const res = await fetch('/api/logout', { method: 'POST' });
+        const res = await fetch('/api/logout', { 
+          method: 'POST',
+          credentials: 'include'
+        });
         const data = await res.json();
         if (data.success) {
           alert('Berhasil Logout!');
