@@ -363,35 +363,32 @@
   <script>
     let globalCandidatesData = [];
 
-    // ➕ 1. TAMBAHKAN FUNGSI CEK AUTHENTIKASI SAAT HALAMAN DIBUKA
+    // 1. CEK AUTHENTIKASI SAAT HALAMAN DIBUKA
     async function checkAuthOnLoad() {
       try {
-        const res = await fetch('/api/check-auth'),{
+        const res = await fetch('/api/check-auth', {
           method: 'GET',
-          credentials: 'include' // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
+          credentials: 'include'
         });
         
         const data = await res.json();
         
-        // Jika ternyata belum login, lempar langsung ke halaman login
         if (!data.isAdmin) {
           alert('🔒 Anda belum login atau sesi telah berakhir.');
           window.location.href = '/login';
           return;
         }
         
-        // Jika sudah login, baru muat data kandidat
         loadDataAdmin();
       } catch (err) {
         window.location.href = '/login';
       }
     }
 
-    // -------------------------------------------------------------
-    // 1. RENDER GAJI DINAMIS (FORM TAMBAH)
-    // -------------------------------------------------------------
+    // RENDER GAJI DINAMIS (FORM TAMBAH)
     function renderDynamicGajiAdd() {
       const container = document.getElementById('container-gaji-add');
+      if (!container) return;
       const selected = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
 
       if (selected.length === 0) {
@@ -414,11 +411,10 @@
       container.innerHTML = html;
     }
 
-    // -------------------------------------------------------------
-    // 2. RENDER GAJI DINAMIS (FORM EDIT)
-    // -------------------------------------------------------------
+    // RENDER GAJI DINAMIS (FORM EDIT)
     function renderDynamicGajiEdit(existingGaji = {}) {
       const container = document.getElementById('container-gaji-edit');
+      if (!container) return;
       const selected = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
 
       if (selected.length === 0) {
@@ -448,17 +444,14 @@
       container.innerHTML = html;
     }
 
-    // -------------------------------------------------------------
-    // 3. FETCH & LOAD DATA CANDIDATES
-    // -------------------------------------------------------------
-    async function loadDataAdmin(), {
+    // FETCH & LOAD DATA CANDIDATES
+    async function loadDataAdmin() {
       try {
-        const res = await fetch('/api/candidates?t=' + Date.now());{
+        const res = await fetch('/api/candidates?t=' + Date.now(), {
           method: 'GET',
-          credentials: 'include' // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
+          credentials: 'include'
         });
 
-        // ➕ TAMBAHKAN INI:
         if (res.status === 401) {
           alert('🔒 Sesi telah berakhir. Silakan login kembali.');
           window.location.href = '/login';
@@ -476,11 +469,11 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 4. RENDER TABEL KANDIDAT
-    // -------------------------------------------------------------
+    // RENDER TABEL KANDIDAT
     function renderTabel(data) {
       const tbody = document.getElementById('tabel-body');
+      if (!tbody) return;
+
       if (!data || data.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 font-medium">Belum ada data kandidat tersimpan.</td></tr>`;
         return;
@@ -490,7 +483,11 @@
       data.forEach(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
         const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
-        const fotoUrl = item.foto ? item.foto : 'https://via.placeholder.com/150?text=No+Image';
+
+        // Handling foto dari Railway Volume / Express Static Folder
+        const fotoUrl = item.foto 
+          ? (item.foto.startsWith('http') || item.foto.startsWith('/') ? item.foto : `/uploads/${item.foto}`)
+          : 'https://via.placeholder.com/150?text=No+Image';
 
         // Format Tampilan Kategori
         let kategoriText = '-';
@@ -518,7 +515,6 @@
             <td class="p-3.5 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
             <td class="p-3.5">
               <div class="flex items-center gap-3">
-                <!-- ➕ ELEMEN FOTO BARU DI SINI -->
                 <div class="relative group shrink-0">
                   <img src="${fotoUrl}" 
                        alt="${item.nama || 'Kandidat'}" 
@@ -571,9 +567,7 @@
       tbody.innerHTML = html;
     }
 
-    // -------------------------------------------------------------
-    // 5. MODAL EDIT HANDLER
-    // -------------------------------------------------------------
+    // MODAL EDIT HANDLER
     function bukaModalEdit(id) {
       const item = globalCandidatesData.find(c => String(c.id) === String(id));
       if (!item) return alert('Data tidak ditemukan');
@@ -592,7 +586,6 @@
       document.getElementById('edit-foto').value = '';
       document.getElementById('edit-cv').value = '';
 
-      // Centang checkbox kategori sesuai data kandidat
       const targetKategori = Array.isArray(item.kategori) ? item.kategori : [item.kategori];
       document.querySelectorAll('input[name="edit-kategori-opt"]').forEach(cb => {
         cb.checked = targetKategori.includes(cb.value);
@@ -607,21 +600,17 @@
       document.getElementById('modal-edit').classList.add('hidden');
     }
 
-    // -------------------------------------------------------------
-    // 6. SUBMIT EDIT DATA
-    // -------------------------------------------------------------
+    // SUBMIT EDIT DATA
     async function submitEditData(e) {
       e.preventDefault();
       const id = document.getElementById('edit-id').value;
       const btn = document.getElementById('btn-submit-edit');
 
-      // Ambil kategori yang dipilih
       const selectedKategori = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
       if (selectedKategori.length === 0) {
         return alert('Pilih minimal 1 kategori pekerjaan!');
       }
 
-      // Ambil Gaji per Kategori
       const gajiObj = {};
       document.querySelectorAll('.input-gaji-item-edit').forEach(input => {
         const kat = input.getAttribute('data-kategori');
@@ -653,7 +642,7 @@
       try {
         const res = await fetch(`/api/candidates/${id}`, {
           method: 'PUT',
-          credentials: 'include', // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
+          credentials: 'include',
           body: formData
         });
 
@@ -674,10 +663,7 @@
       }
     }
 
-    // -------------------------------------------------------------
-   // -------------------------------------------------------------
-    // 7. SIMPAN DATA BARU
-    // -------------------------------------------------------------
+    // SIMPAN DATA BARU
     async function simpanData(e) {
       e.preventDefault();
       
@@ -718,11 +704,10 @@
       try {
         const res = await fetch('/api/candidates', {
           method: 'POST',
-          credentials: 'include', // 👈 WAJIB ADA DI GET
+          credentials: 'include',
           body: formData
         });
 
-        // ➕ TAMBAHAN: Cek jika sesi login habis/ditolak oleh middleware auth
         if (res.status === 401) {
           alert('🔒 Akses ditolak! Sesi login Anda telah berakhir.');
           window.location.href = '/login';
@@ -747,17 +732,16 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 8. HAPUS KANDIDAT
-    // -------------------------------------------------------------
+    // HAPUS KANDIDAT
     async function hapusKandidat(id) {
       if (!confirm(`Apakah Anda yakin ingin menghapus kandidat ID ${id}?`)) return;
 
       try {
-        const res = await fetch(`/api/candidates/${id}`, { method: 'DELETE' });
-        
+        const res = await fetch(`/api/candidates/${id}`, { 
+          method: 'DELETE',
+          credentials: 'include' 
+        });
 
-        // ➕ TAMBAHKAN INI:
         if (res.status === 401) {
           alert('🔒 Sesi login telah berakhir.');
           window.location.href = '/login';
@@ -774,9 +758,7 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 9. GANTI STATUS CEPAT (READY / TER-SALUR)
-    // -------------------------------------------------------------
+    // GANTI STATUS CEPAT (READY / TER-SALUR)
     async function gantiStatus(id, statusSekarang) {
       const statusBaru = statusSekarang === 'READY WORK' ? 'TER-SALUR' : 'READY WORK';
 
@@ -785,11 +767,18 @@
       try {
         const res = await fetch(`/api/candidates/${id}/status`, {
           method: 'PATCH',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ status: statusBaru })
         });
+
+        if (res.status === 401) {
+          alert('🔒 Sesi login telah berakhir.');
+          window.location.href = '/login';
+          return;
+        }
 
         const result = await res.json();
 
@@ -803,9 +792,7 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 10. LOGOUT ADMIN
-    // -------------------------------------------------------------
+    // LOGOUT ADMIN
     async function logoutAdmin() {
       try {
         const res = await fetch('/api/logout', { 
@@ -825,5 +812,3 @@
     // Init Data saat Halaman Selesai Dimuat
     document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
   </script>
-</body>
-</html>
