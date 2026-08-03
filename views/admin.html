@@ -24,9 +24,10 @@
       background-size: 20px 20px;
       opacity: 0.12;
     }
-    /* Custom Scrollbar Modal */
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
+      height: 6px;
     }
     ::-webkit-scrollbar-thumb {
       background: #cbd5e1;
@@ -48,7 +49,7 @@
     <!-- HEADER -->
     <header class="flex flex-col md:flex-row justify-between items-center bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-sm border border-teal-100/80 gap-4">
       <div class="flex items-center gap-3.5">
-        <div class="p-2 bg-teal-50 border border-teal-100 rounded-xl shadow-xs">
+        <div class="p-2 bg-teal-50 border border-teal-100 rounded-xl shadow-xs shrink-0">
           <img src="/logo.png" alt="Logo Yayasan" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/40?text=YSK'">
         </div>
         <div>
@@ -205,12 +206,12 @@
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
-                <th class="p-3.5 w-20">ID</th>
-                <th class="p-3.5 w-48">Nama Kandidat</th>
-                <th class="p-3.5">Kategori & Gaji</th>
-                <th class="p-3.5 w-36">No. HP</th>
-                <th class="p-3.5 w-32 text-center">Status</th>
-                <th class="p-3.5 w-28 text-center">Aksi</th>
+                <th class="p-4 w-16">ID</th>
+                <th class="p-4 w-64">Nama Kandidat</th>
+                <th class="p-4">Kategori & Gaji</th>
+                <th class="p-4 w-36">No. HP</th>
+                <th class="p-4 w-32 text-center">Status</th>
+                <th class="p-4 w-28 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody id="tabel-body" class="divide-y divide-slate-100 bg-white">
@@ -512,51 +513,51 @@
         
         html += `
           <tr class="hover:bg-teal-50/40 transition-colors align-middle">
-            <td class="p-3.5 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
-            <td class="p-3.5">
-              <div class="flex items-center gap-3">
+            <td class="p-4 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
+            <td class="p-4">
+              <div class="flex items-center gap-3.5">
                 <div class="relative group shrink-0">
                   <img src="${fotoUrl}" 
                        alt="${item.nama || 'Kandidat'}" 
                        onerror="this.src='https://via.placeholder.com/150?text=No+Image'"
-                       class="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-xs group-hover:scale-105 transition-transform cursor-pointer"
+                       class="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-sm group-hover:scale-105 transition-transform cursor-pointer"
                        onclick="window.open('${fotoUrl}', '_blank')" 
                        title="Klik untuk melihat foto ukuran penuh">
                 </div>
                 <div>
-                  <div class="font-bold text-slate-900 leading-snug">${item.nama || '-'}</div>
-                  <div class="text-[10px] text-slate-400 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
+                  <div class="font-bold text-slate-900 text-sm leading-snug">${item.nama || '-'}</div>
+                  <div class="text-xs text-slate-500 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
                 </div>
               </div>
             </td>
-            <td class="p-3.5">
-              <div class="font-bold text-teal-900 text-[11px]">${kategoriText}</div>
-              <div class="mt-1 space-y-0.5">${gajiText}</div>
+            <td class="p-4">
+              <div class="font-bold text-teal-900 text-xs mb-1">${kategoriText}</div>
+              <div class="space-y-0.5">${gajiText}</div>
             </td>
-            <td class="p-3.5 whitespace-nowrap">
+            <td class="p-4 whitespace-nowrap">
               <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}" target="_blank" class="inline-flex items-center gap-1 font-bold text-teal-800 hover:text-teal-600 hover:underline">
                 <span>📱</span> ${item.noHp || '-'}
               </a>
             </td>
-            <td class="p-3.5 text-center whitespace-nowrap">
+            <td class="p-4 text-center whitespace-nowrap">
               <button onclick="gantiStatus('${item.id}', '${statusText}')" 
                       title="Klik untuk mengubah status ketersediaan"
-                      class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold rounded-lg transition-all cursor-pointer shadow-2xs active:scale-95 ${
+                      class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer shadow-2xs active:scale-95 ${
                         isReady 
                           ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300' 
                           : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300'
                       }">
                 <span>${isReady ? '🟢' : '🔴'}</span>
                 <span>${statusText}</span>
-                <span class="text-[8px] opacity-60 ml-0.5">🔄</span>
+                <span class="text-[9px] opacity-60 ml-0.5">🔄</span>
               </button>
             </td>
-            <td class="p-3.5 text-center whitespace-nowrap">
+            <td class="p-4 text-center whitespace-nowrap">
               <div class="inline-flex items-center justify-center gap-1.5">
-                <button onclick="bukaModalEdit('${item.id}')" class="px-2.5 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-[11px] shadow-2xs">
+                <button onclick="bukaModalEdit('${item.id}')" class="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-xs shadow-2xs">
                   ✏️ Edit
                 </button>
-                <button onclick="hapusKandidat('${item.id}')" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-colors cursor-pointer text-[11px] shadow-2xs">
+                <button onclick="hapusKandidat('${item.id}')" class="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold border border-rose-200 transition-colors cursor-pointer text-xs shadow-2xs">
                   🗑️ Hapus
                 </button>
               </div>
@@ -812,3 +813,5 @@
     // Init Data saat Halaman Selesai Dimuat
     document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
   </script>
+</body>
+</html>
