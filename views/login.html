@@ -198,6 +198,7 @@
       try {
         const res = await fetch('/api/login', {
           method: 'POST',
+          credentials: 'include', // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username: e.target.username.value,
