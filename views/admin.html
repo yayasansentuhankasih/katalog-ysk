@@ -201,15 +201,15 @@
           </button>
         </div>
         
-        <!-- Table Wrapper -->
+        <!-- Table Wrapper (Dengan Minimum Width & Lebar Kolom Terkunci) -->
         <div class="overflow-x-auto rounded-xl border border-slate-200/80 shadow-2xs">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                 <th class="p-4 w-16">ID</th>
-                <th class="p-4 w-64">Nama Kandidat</th>
-                <th class="p-4">Kategori & Gaji</th>
-                <th class="p-4 w-36">No. HP</th>
+                <th class="p-4 min-w-[240px]">Nama Kandidat</th>
+                <th class="p-4 min-w-[260px]">Kategori & Gaji</th>
+                <th class="p-4 min-w-[150px]">No. HP</th>
                 <th class="p-4 w-32 text-center">Status</th>
                 <th class="p-4 w-28 text-center">Aksi</th>
               </tr>
@@ -470,7 +470,7 @@
       }
     }
 
-    // RENDER TABEL KANDIDAT
+    // RENDER TABEL KANDIDAT (LAYOUT RAPI & TERSTRUKTUR)
     function renderTabel(data) {
       const tbody = document.getElementById('tabel-body');
       if (!tbody) return;
@@ -502,8 +502,8 @@
         let gajiText = '-';
         if (typeof item.gaji === 'object' && item.gaji !== null && !Array.isArray(item.gaji)) {
           gajiText = Object.entries(item.gaji).map(([k, v]) => `
-            <div class="text-[11px] leading-tight">
-              <span class="text-slate-500">${k}:</span> 
+            <div class="text-[11px] leading-snug">
+              <span class="text-slate-500 font-medium">${k}:</span> 
               <span class="font-bold text-slate-800">Rp ${Number(v).toLocaleString('id-ID')}</span>
             </div>
           `).join('');
@@ -512,33 +512,44 @@
         }
         
         html += `
-          <tr class="hover:bg-teal-50/40 transition-colors align-middle">
+          <tr class="hover:bg-teal-50/40 transition-colors align-top">
+            <!-- 1. ID -->
             <td class="p-4 font-bold text-slate-700 whitespace-nowrap">#${item.id}</td>
+            
+            <!-- 2. NAMA & FOTO -->
             <td class="p-4">
-              <div class="flex items-center gap-3.5">
+              <div class="flex items-start gap-3">
                 <div class="relative group shrink-0">
                   <img src="${fotoUrl}" 
                        alt="${item.nama || 'Kandidat'}" 
                        onerror="this.src='https://via.placeholder.com/150?text=No+Image'"
-                       class="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-sm group-hover:scale-105 transition-transform cursor-pointer"
+                       class="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-xs group-hover:scale-105 transition-transform cursor-pointer"
                        onclick="window.open('${fotoUrl}', '_blank')" 
                        title="Klik untuk melihat foto ukuran penuh">
                 </div>
-                <div>
-                  <div class="font-bold text-slate-900 text-sm leading-snug">${item.nama || '-'}</div>
-                  <div class="text-xs text-slate-500 mt-0.5">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
+                <div class="space-y-1 min-w-0">
+                  <div class="font-bold text-slate-900 text-sm leading-snug break-words">${item.nama || '-'}</div>
+                  <div class="text-xs text-slate-500 font-medium">${item.asal || '-'} • ${item.umur || '-'} Thn</div>
                 </div>
               </div>
             </td>
+
+            <!-- 3. KATEGORI & GAJI -->
             <td class="p-4">
-              <div class="font-bold text-teal-900 text-xs mb-1">${kategoriText}</div>
-              <div class="space-y-0.5">${gajiText}</div>
+              <div class="space-y-1.5">
+                <div class="font-bold text-teal-900 text-xs leading-snug break-words">${kategoriText}</div>
+                <div class="pt-1.5 border-t border-slate-100 space-y-1">${gajiText}</div>
+              </div>
             </td>
+
+            <!-- 4. NO HP -->
             <td class="p-4 whitespace-nowrap">
-              <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}" target="_blank" class="inline-flex items-center gap-1 font-bold text-teal-800 hover:text-teal-600 hover:underline">
+              <a href="https://wa.me/${(item.noHp || '').replace(/[^0-9]/g, '')}" target="_blank" class="inline-flex items-center gap-1.5 font-bold text-teal-800 hover:text-teal-600 hover:underline">
                 <span>📱</span> ${item.noHp || '-'}
               </a>
             </td>
+
+            <!-- 5. STATUS -->
             <td class="p-4 text-center whitespace-nowrap">
               <button onclick="gantiStatus('${item.id}', '${statusText}')" 
                       title="Klik untuk mengubah status ketersediaan"
@@ -552,6 +563,8 @@
                 <span class="text-[9px] opacity-60 ml-0.5">🔄</span>
               </button>
             </td>
+
+            <!-- 6. AKSI -->
             <td class="p-4 text-center whitespace-nowrap">
               <div class="inline-flex items-center justify-center gap-1.5">
                 <button onclick="bukaModalEdit('${item.id}')" class="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-bold border border-amber-200 transition-colors cursor-pointer text-xs shadow-2xs">
