@@ -222,11 +222,14 @@ app.get('/admin', (req, res) => {
   if (req.session && req.session.isAdmin) {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
   } else {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+    res.redirect('/login'); // 👈 Beralih URL secara bersih ke /login
   }
 });
 
 app.get('/login', (req, res) => {
+  if (req.session && req.session.isAdmin) {
+    return res.redirect('/admin'); // Jika sudah login, langsung lempar ke admin
+  }
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
