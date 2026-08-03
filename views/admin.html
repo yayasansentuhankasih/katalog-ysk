@@ -366,7 +366,7 @@
     // ➕ 1. TAMBAHKAN FUNGSI CEK AUTHENTIKASI SAAT HALAMAN DIBUKA
     async function checkAuthOnLoad() {
       try {
-        const res = await fetch('/api/check-auth');{
+        const res = await fetch('/api/check-auth'),{
           method: 'GET',
           credentials: 'include' // 👈 WAJIB DITAMBAHKAN AGAR COOKIE SESSION DIKIRIM
         });
@@ -451,7 +451,7 @@
     // -------------------------------------------------------------
     // 3. FETCH & LOAD DATA CANDIDATES
     // -------------------------------------------------------------
-    async function loadDataAdmin() {
+    async function loadDataAdmin(), {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now());{
           method: 'GET',
@@ -490,6 +490,7 @@
       data.forEach(item => {
         const isReady = (item.status || '').toUpperCase().includes('READY');
         const statusText = isReady ? 'READY WORK' : 'TER-SALUR';
+        const fotoUrl = item.foto ? item.foto : 'https://via.placeholder.com/150?text=No+Image';
 
         // Format Tampilan Kategori
         let kategoriText = '-';
