@@ -337,8 +337,13 @@
       const search = document.getElementById('filter-search').value.toLowerCase();
       const kategori = document.getElementById('filter-kategori').value;
       const pengalaman = document.getElementById('filter-pengalaman').value;
-
+    
       const filtered = allCandidates.filter(item => {
+        // 🟢 1. FILTER HANYA TAMPILKAN KANDIDAT YANG READY
+        const isReady = (item.status || '').toUpperCase().includes('READY');
+        if (!isReady) return false; // Abaikan/sembunyikan jika statusnya 'Tersalur'
+    
+        // 2. Filter Kategori
         let matchesKategori = false;
         if (kategori === 'Semua') {
           matchesKategori = true;
@@ -347,19 +352,21 @@
         } else if (item.kategori) {
           matchesKategori = item.kategori === kategori;
         }
-
+    
+        // 3. Filter Pengalaman
         const exp = parseInt(item.pengalaman) || 0;
         let matchesPengalaman = true;
         if (pengalaman === 'kurang1') matchesPengalaman = exp < 1;
         else if (pengalaman === '1sampai3') matchesPengalaman = exp >= 1 && exp <= 3;
         else if (pengalaman === 'lebih3') matchesPengalaman = exp > 3;
-
+    
+        // 4. Filter Pencarian
         const textSearch = `${item.nama} ${item.id} ${item.keahlian} ${item.asal}`.toLowerCase();
         const matchesSearch = textSearch.includes(search);
-
+    
         return matchesKategori && matchesPengalaman && matchesSearch;
       });
-
+    
       renderCandidates(filtered);
     }
 
