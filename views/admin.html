@@ -460,14 +460,13 @@
       container.innerHTML = html;
     }
 
-    // FETCH & LOAD DATA CANDIDATES
     async function loadDataAdmin() {
       try {
         const res = await fetch('/api/candidates?t=' + Date.now(), {
           method: 'GET',
           credentials: 'include'
         });
-
+    
         if (res.status === 401) {
           alert('🔒 Sesi telah berakhir. Silakan login kembali.');
           window.location.href = '/login';
@@ -476,13 +475,42 @@
         if (res.ok) {
           const data = await res.json();
           globalCandidatesData = data;
-          renderTabel(data);
+          
+          // 📍 PANGGIL FILTER AGAR TABEL SESUAI KATEGORI YANG SEDANG DIPILIH
+          filterKategoriTabel(); 
         } else {
           alert("Gagal memuat data dari server.");
         }
       } catch (err) {
         alert("Gagal terhubung ke backend server Node.js!");
       }
+    }
+
+    // FUNGSI FILTER KATEGORI PADA TABEL ADMIN
+    function filterKategoriTabel() {
+      const selectedValue = document.getElementById('filter-kategori').value.toUpperCase();
+    
+      // Jika pilih 'Semua Kategori', tampilkan seluruh data
+      if (selectedValue === 'ALL') {
+        renderTabel(globalCandidatesData);
+        return;
+      }
+    
+      // Filter data berdasarkan kategori kandidat
+      const filteredData = globalCandidatesData.filter(item => {
+        if (!item.kategori) return false;
+    
+        // Jika kategori berupa Array
+        if (Array.isArray(item.kategori)) {
+          return item.kategori.some(kat => kat.toUpperCase().includes(selectedValue));
+        }
+        
+        // Jika kategori berupa String biasa
+        return String(item.kategori).toUpperCase().includes(selectedValue);
+      });
+    
+      // Render ulang tabel dengan data hasil filter
+      renderTabel(filteredData);
     }
 
     // RENDER TABEL KANDIDAT (LAYOUT RAPI & TERSTRUKTUR)
