@@ -620,6 +620,17 @@
       const id = document.getElementById('edit-id').value;
       const btn = document.getElementById('btn-submit-edit');
 
+      // 🔍 VALIDASI UKURAN FILE (MAX 1 MB)
+      const fileFoto = document.getElementById('edit-foto').files[0];
+      if (fileFoto && fileFoto.size > 1 * 1024 * 1024) {
+        return alert('❌ Ukuran Foto Profil baru terlalu besar! Maksimal 1 MB.');
+      }
+    
+      const fileCv = document.getElementById('edit-cv').files[0];
+      if (fileCv && fileCv.size > 1 * 1024 * 1024) {
+        return alert('❌ Ukuran Dokumen CV baru terlalu besar! Maksimal 1 MB.');
+      }
+
       const selectedKategori = Array.from(document.querySelectorAll('input[name="edit-kategori-opt"]:checked')).map(cb => cb.value);
       if (selectedKategori.length === 0) {
         return alert('Pilih minimal 1 kategori pekerjaan!');
@@ -682,6 +693,22 @@
     // SIMPAN DATA BARU
     async function simpanData(e) {
       e.preventDefault();
+
+      // 🔍 VALIDASI UKURAN FILE (MAX 1 MB)
+      const fileFoto = document.getElementById('input-foto').files[0];
+      if (fileFoto && fileFoto.size > 1 * 1024 * 1024) {
+        return alert('❌ Ukuran Foto Profil terlalu besar! Maksimal 1 MB.');
+      }
+    
+      const fileCv = document.getElementById('input-cv').files[0];
+      if (fileCv && fileCv.size > 1 * 1024 * 1024) {
+        return alert('❌ Ukuran Dokumen CV terlalu besar! Maksimal 1 MB.');
+      }
+    
+      const selectedKategori = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
+      if (selectedKategori.length === 0) {
+        return alert('Pilih minimal 1 kategori pekerjaan!');
+      }
       
       const selectedKategori = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
       if (selectedKategori.length === 0) {
