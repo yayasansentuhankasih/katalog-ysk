@@ -210,14 +210,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// -------------------- Konfigurasi Multer upload foto 1MB ---------------
-const upload = multer({
-  storage: storage, // Konfigurasi storage kamu
-  limits: { 
-    fileSize: 1 * 1024 * 1024 // 1 MB dalam satuan Byte
-  }
-});
-
 // Middleware penanganan error Multer jika file terlalu besar
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
