@@ -210,6 +210,27 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// -------------------- Konfigurasi Multer upload foto 1MB ---------------
+const upload = multer({
+  storage: storage, // Konfigurasi storage kamu
+  limits: { 
+    fileSize: 1 * 1024 * 1024 // 1 MB dalam satuan Byte
+  }
+});
+
+// Middleware penanganan error Multer jika file terlalu besar
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: '❌ Ukuran file terlalu besar. Maksimal 1 MB!'
+      });
+    }
+  }
+  next(err);
+});
+
 // =================================================================
 // 🌐 1. ROUTING HALAMAN WEB
 // =================================================================
