@@ -634,22 +634,7 @@
       btn.disabled = true;
       btn.innerText = '⌛ Menyimpan...';
 
-      const fileFoto = document.getElementById('edit-foto').files[0];
-      if (fileFoto) {
-        if (fileFoto.size > 1 * 1024 * 1024) {
-          return alert('❌ Ukuran Foto Profil baru maksimal 1 MB!');
-        }
-        formData.append('foto', fileFoto);
-      }
       
-      const fileCv = document.getElementById('edit-cv').files[0];
-      if (fileCv) {
-        if (fileCv.size > 1 * 1024 * 1024) {
-          return alert('❌ Ukuran Dokumen CV baru maksimal 1 MB!');
-        }
-        formData.append('fotoCv', fileCv);
-      }
-
       
       const formData = new FormData();
       formData.append('nama', document.getElementById('edit-nama').value);
@@ -713,24 +698,7 @@
       btn.disabled = true;
       btn.innerText = '⌛ Mengunggah File...';
 
-      const fileFoto = document.getElementById('input-foto').files[0];
-      if (fileFoto) {
-        if (fileFoto.size > 1 * 1024 * 1024) { // 1 MB
-          return alert('❌ Ukuran Foto Profil maksimal 1 MB!');
-        }
-        formData.append('foto', fileFoto);
-      }
       
-      // Cek file CV
-      const fileCv = document.getElementById('input-cv').files[0];
-      if (fileCv) {
-        if (fileCv.size > 1 * 1024 * 1024) { // 1 MB
-          return alert('❌ Ukuran Dokumen CV maksimal 1 MB!');
-        }
-        formData.append('fotoCv', fileCv);
-      }
-
-
       const formData = new FormData();
       formData.append('nama', document.getElementById('input-nama').value);
       formData.append('kategori', JSON.stringify(selectedKategori));
