@@ -708,11 +708,6 @@
         return alert('Pilih minimal 1 kategori pekerjaan!');
       }
       
-      const selectedKategori = Array.from(document.querySelectorAll('input[name="input-kategori-opt"]:checked')).map(cb => cb.value);
-      if (selectedKategori.length === 0) {
-        return alert('Pilih minimal 1 kategori pekerjaan!');
-      }
-
       const gajiObj = {};
       document.querySelectorAll('.input-gaji-item-add').forEach(input => {
         const kat = input.getAttribute('data-kategori');
