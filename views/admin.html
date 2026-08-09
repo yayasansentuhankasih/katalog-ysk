@@ -200,6 +200,21 @@
             🔄 Refresh Data
           </button>
         </div>
+
+        <!-- 📍 DROPDOWN FILTER KATEGORI 📍 -->
+        <div class="flex items-center gap-2">
+          <label for="filter-kategori" class="text-xs font-bold text-slate-600 whitespace-nowrap">📌 Kategori:</label>
+          <select id="filter-kategori" onchange="filterKategoriTabel()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all cursor-pointer shadow-2xs">
+            <option value="ALL">📌 Semua Kategori Pekerjaan</option>
+            <option value="ART">Asisten Rumah Tangga (ART)</option>
+            <option value="BABY">Baby Sitter / Pengasuh</option>
+            <option value="LANSIA">Perawat Lansia / Caregiver</option>
+            <option value="DRIVER">Driver</option>
+            <option value="KEBUN">Tukang Kebun</option>
+            <option value="SECURITY">Security</option>
+            <option value="CHEF">Chef</option>
+          </select>
+        </div>
         
         <!-- Table Wrapper (Dengan Minimum Width & Lebar Kolom Terkunci) -->
         <div class="overflow-x-auto rounded-xl border border-slate-200/80 shadow-2xs">
