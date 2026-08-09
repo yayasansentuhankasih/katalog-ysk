@@ -660,9 +660,7 @@
       formData.append('asal', document.getElementById('edit-asal').value);
       formData.append('keahlian', document.getElementById('edit-keahlian').value);
 
-      const fileFoto = document.getElementById('edit-foto').files[0];
-      const fileCv = document.getElementById('edit-cv').files[0];
-
+      
       if (fileFoto) formData.append('foto', fileFoto);
       if (fileCv) formData.append('fotoCv', fileCv);
 
@@ -739,9 +737,7 @@
       formData.append('tinggi', document.getElementById('input-tinggi').value);
       formData.append('berat', document.getElementById('input-berat').value);
 
-      const fileFoto = document.getElementById('input-foto').files[0];
-      const fileCv = document.getElementById('input-cv').files[0];
-
+ 
       if (fileFoto) formData.append('foto', fileFoto);
       if (fileCv) formData.append('fotoCv', fileCv);
 
